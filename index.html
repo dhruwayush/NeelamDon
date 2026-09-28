@@ -3,11 +3,24 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>Marigold &amp; Monsoon Sketchbook</title>
+<title>Sunflowers</title>
+<meta name="description" content="A sketchbook of fourteen photographs, each redrawn by hand. Sunflowers, always in pairs.">
+<meta name="theme-color" content="#2f2a25">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Sunflowers">
+<meta property="og:description" content="Because someone once told me sunflowers are always given in pairs.">
+<meta property="og:url" content="https://dhruwayush.github.io/NeelamDon/">
+<meta property="og:image" content="https://dhruwayush.github.io/NeelamDon/og.jpg">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Sunflowers">
+<meta name="twitter:description" content="Because someone once told me sunflowers are always given in pairs.">
+<meta name="twitter:image" content="https://dhruwayush.github.io/NeelamDon/og.jpg">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Cg fill='%23f2b31d'%3E%3Cellipse cx='16' cy='5' rx='3.2' ry='5'/%3E%3Cellipse cx='16' cy='27' rx='3.2' ry='5'/%3E%3Cellipse cx='5' cy='16' rx='5' ry='3.2'/%3E%3Cellipse cx='27' cy='16' rx='5' ry='3.2'/%3E%3Cellipse cx='8' cy='8' rx='3.2' ry='5' transform='rotate(-45 8 8)'/%3E%3Cellipse cx='24' cy='24' rx='3.2' ry='5' transform='rotate(-45 24 24)'/%3E%3Cellipse cx='24' cy='8' rx='3.2' ry='5' transform='rotate(45 24 8)'/%3E%3Cellipse cx='8' cy='24' rx='3.2' ry='5' transform='rotate(45 8 24)'/%3E%3C/g%3E%3Ccircle cx='16' cy='16' r='6.5' fill='%235a3b1c'/%3E%3C/svg%3E">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Kalam:wght@300;400;700&family=Young+Serif&family=Courier+Prime:wght@400;700&display=swap">
-<script src="https://cdn.tailwindcss.com/3.4.16"></script>
 <style>
   /* Deliberately single-theme: a sketchbook lying open on a dark desk. */
   :root {
@@ -21,7 +34,8 @@
     --indigo: #33407a;
     --rose: #d59c98;
     --sage: #a3b494;
-    --marigold: #e39a2d;
+    --marigold: #f2b31d;
+    --seed: #5a3b1c;
     --grain: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='220' height='220'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 .35  0 0 0 0 .27  0 0 0 0 .18  0 0 0 .09 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
     --fibres: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='400' height='400'%3E%3Cfilter id='f'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.012 .09' numOctaves='2' seed='4'/%3E%3CfeColorMatrix values='0 0 0 0 .45  0 0 0 0 .35  0 0 0 0 .22  0 0 0 .06 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23f)'/%3E%3C/svg%3E");
   }
@@ -52,7 +66,7 @@
     transition: border-color .2s, background .2s;
   }
   .sound:hover { border-color: var(--marigold); }
-  .sound[aria-pressed="true"] { background: rgba(227,154,45,.16); border-color: var(--marigold); }
+  .sound[aria-pressed="true"] { background: rgba(242,179,29,.16); border-color: var(--marigold); }
   .sound svg path { transition: d .3s; }
   .sound .bars rect { transform-origin: bottom; transform-box: fill-box; }
   .sound[aria-pressed="true"] .bars rect { animation: eq 1.4s ease-in-out infinite; }
@@ -119,7 +133,7 @@
   .tool:focus-visible, .arrow:focus-visible, .sound:focus-visible, .frame:focus-visible { outline: 2px solid var(--marigold); outline-offset: 3px; }
 
   .canvas-wrap { flex: 1; display: grid; place-items: center; }
-  canvas#sketch { width: 100%; max-width: 470px; aspect-ratio: 3 / 4; height: auto; display: block; }
+  canvas#sketch { display: block; }
   canvas#sketch.doodling { cursor: crosshair; touch-action: none; }
   .status { font-size: 15px; color: var(--ink-soft); min-height: 1.4em; }
 
@@ -169,6 +183,36 @@
   @media (prefers-reduced-motion: reduce) {
     .flip-next .page.right, .flip-prev .page.left, .sound[aria-pressed="true"] .bars rect { animation: none; }
   }
+
+  .masthead h1 { display: flex; align-items: center; gap: 14px; }
+  .masthead h1 svg { width: .9em; height: .9em; flex: none; }
+  .masthead p { font-size: 14px; }
+  .masthead p b { color: #f6ecd9; font-weight: 400; }
+
+  /* cover + last page */
+  .note-page { flex: 1; display: none; flex-direction: column; justify-content: center; gap: 18px; padding: 10px 8px 26px; min-height: 420px; }
+  .spread[data-kind="cover"] .note-page, .spread[data-kind="end"] .note-page { display: flex; }
+  .spread:not([data-kind="photo"]) .mount-wrap, .spread:not([data-kind="photo"]) .caption, .spread:not([data-kind="photo"]) #compareBtn { display: none; }
+  .note-page .eyebrow { font: 700 12px/1 "Courier Prime", monospace; letter-spacing: .18em; text-transform: uppercase; color: var(--ink-soft); }
+  .note-page .name { font-family: "Young Serif", Georgia, serif; font-size: clamp(52px, 7vw, 88px); line-height: 1; color: var(--seed); letter-spacing: -.01em; }
+  .note-page .lede { font-family: "Kalam", cursive; font-size: clamp(19px, 2vw, 23px); line-height: 1.45; color: var(--ink); max-width: 28ch; }
+  .note-page .letter { font-family: "Kalam", cursive; font-size: clamp(20px, 2.2vw, 26px); line-height: 1.55; color: var(--ink); max-width: 27ch; transform: rotate(-.6deg); }
+  .note-page .sig { font-family: "Kalam", cursive; font-size: 28px; color: var(--indigo); transform: rotate(-2deg); }
+  .note-page .hint { font: 700 12px/1 "Courier Prime", monospace; letter-spacing: .14em; text-transform: uppercase; color: var(--indigo); }
+  .note-page .hint button { font: inherit; color: inherit; background: none; border: 0; border-bottom: 1.5px dashed currentColor; padding: 2px 0; cursor: pointer; letter-spacing: inherit; text-transform: inherit; }
+
+  /* sketch stage + compare wipe */
+  .stage { position: relative; width: 100%; max-width: 470px; aspect-ratio: 3 / 4; }
+  .stage canvas#sketch { width: 100%; height: 100%; max-width: none; aspect-ratio: auto; }
+  .cmp { position: absolute; inset: 0; display: none; clip-path: inset(0 calc(100% - var(--cut, 50%)) 0 0); }
+  .cmp img { width: 100%; height: 100%; object-fit: cover; border-radius: 2px; }
+  .stage.comparing .cmp { display: block; }
+  .stage.comparing { cursor: ew-resize; touch-action: none; }
+  .stage.comparing::after { content: ""; position: absolute; top: -6px; bottom: -6px; left: var(--cut, 50%); width: 3px; transform: translateX(-1.5px); background: var(--marigold); border-radius: 2px; box-shadow: 0 0 0 1px rgba(60,40,10,.25); pointer-events: none; }
+  .stage.comparing::before { content: "⇆"; position: absolute; z-index: 2; top: 50%; left: var(--cut, 50%); width: 34px; height: 34px; transform: translate(-50%, -50%); display: grid; place-items: center; border-radius: 50%; background: var(--marigold); color: var(--seed); font: 700 16px/1 system-ui, sans-serif; box-shadow: 0 2px 8px rgba(0,0,0,.3); pointer-events: none; }
+
+  .frame.special { background: radial-gradient(circle at 50% 42%, var(--seed) 0 11px, var(--marigold) 12px 21px, transparent 22px), #2b2723; }
+  .frame.special span { left: 0; right: 0; text-align: center; font-size: 10.5px; letter-spacing: .08em; text-transform: uppercase; }
 </style>
 <style>*,*::before,*::after{box-sizing:border-box}body{margin:0}img{max-width:100%}[hidden]{display:none!important}</style>
 </head>
@@ -176,8 +220,8 @@
 
 <header class="masthead">
   <div>
-    <h1 class="display">Marigold <em>&amp;</em> Monsoon</h1>
-    <p>Fourteen photographs, redrawn by hand one page at a time.</p>
+    <h1 class="display"><svg viewBox="0 0 32 32" aria-hidden="true"><g fill="#f2b31d"><ellipse cx="16" cy="5" rx="3.2" ry="5"/><ellipse cx="16" cy="27" rx="3.2" ry="5"/><ellipse cx="5" cy="16" rx="5" ry="3.2"/><ellipse cx="27" cy="16" rx="5" ry="3.2"/><ellipse cx="8" cy="8" rx="3.2" ry="5" transform="rotate(-45 8 8)"/><ellipse cx="24" cy="24" rx="3.2" ry="5" transform="rotate(-45 24 24)"/><ellipse cx="24" cy="8" rx="3.2" ry="5" transform="rotate(45 24 8)"/><ellipse cx="8" cy="24" rx="3.2" ry="5" transform="rotate(45 8 24)"/></g><circle cx="16" cy="16" r="6.5" fill="#5a3b1c"/></svg>Sunflowers</h1>
+    <p>Because someone once told me sunflowers are always given <b>in pairs</b>.</p>
   </div>
   <button class="sound" id="soundBtn" aria-pressed="false" type="button">
     <svg class="bars" width="22" height="18" viewBox="0 0 22 18" aria-hidden="true">
@@ -199,7 +243,8 @@
 
   <div class="spread" id="spread">
     <section class="page left" aria-label="Photograph">
-      <div class="page-head"><span>Photograph</span><span>No. <b id="pageNo">01</b> / 14</span></div>
+      <div class="page-head"><span id="leftLabel">Photograph</span><span id="pageCount">No. <b id="pageNo">01</b> / 14</span></div>
+      <div class="note-page" id="notePage"></div>
       <div class="mount-wrap">
         <figure class="mount">
           <span class="tape t1" aria-hidden="true"></span>
@@ -218,10 +263,11 @@
       <div class="toolbar">
         <button class="tool" id="replayBtn" type="button">Replay sketch</button>
         <button class="tool" id="finishBtn" type="button">Finish now</button>
+        <button class="tool" id="compareBtn" type="button" aria-pressed="false">Compare</button>
         <button class="tool" id="doodleBtn" type="button" aria-pressed="false">Doodle</button>
         <button class="tool" id="clearBtn" type="button">Clear doodles</button>
       </div>
-      <div class="canvas-wrap"><canvas id="sketch" width="600" height="800" aria-label="Hand-drawn sketch of the photograph"></canvas></div>
+      <div class="canvas-wrap"><div class="stage" id="stage"><canvas id="sketch" width="600" height="800" aria-label="Hand-drawn sketch of the photograph"></canvas><div class="cmp" aria-hidden="true"><img id="cmpPhoto" alt=""></div></div></div>
       <p class="status hand" id="status"></p>
     </section>
   </div>
@@ -242,7 +288,9 @@
 <footer class="foot">
   <span><kbd>←</kbd> <kbd>→</kbd> turn pages</span>
   <span><kbd>R</kbd> replay sketch</span>
+  <span><kbd>C</kbd> compare</span>
   <span><kbd>D</kbd> doodle mode</span>
+  <span>Swipe on phones</span>
 </footer>
 
 <script src="pages.js"></script>
@@ -253,21 +301,40 @@
    to renderPlaceholderSketch(pageId, S). Fill them in one page at a time.
    ========================================================================== */
 const sketchbookData = [
-  { id: 1,  photo: "photos/p01.jpg", thumb: "thumbs/p01.jpg", title: "Blue hour at the mural", note: "Halter blue against painted blossoms and a striped moon.", sketch: (S) => renderPage1Sketch(S) },
-  { id: 2,  photo: "photos/p02.jpg", thumb: "thumbs/p02.jpg", title: "Festival lights",        note: "Wine-red and gold under violet fairy lights.",            sketch: (S) => renderPage2Sketch(S) },
-  { id: 3,  photo: "photos/p03.jpg", thumb: "thumbs/p03.jpg", title: "Powder-blue saree",      note: "Lace border, teal blouse, pearl drops.",                  sketch: (S) => renderPage3Sketch(S) },
-  { id: 4,  photo: "photos/p04.jpg", thumb: "thumbs/p04.jpg", title: "River day",              note: "Life jacket on, jade-green water behind.",               sketch: (S) => renderPage4Sketch(S) },
-  { id: 5,  photo: "photos/p05.jpg", thumb: "thumbs/p05.jpg", title: "By the water",           note: "Peony print and a quiet smile.",                          sketch: (S) => renderPage5Sketch(S) },
-  { id: 6,  photo: "photos/p06.jpg", thumb: "thumbs/p06.jpg", title: "Red kurta, pine walls",  note: "Embroidered red, a gold watch, warm wood.",               sketch: (S) => renderPage6Sketch(S) },
-  { id: 7,  photo: "photos/p07.jpg", thumb: "thumbs/p07.jpg", title: "The heart wall",         note: "Night-garden florals against a green wall.",              sketch: (S) => renderPage7Sketch(S) },
-  { id: 8,  photo: "photos/p08.jpg", thumb: "thumbs/p08.jpg", title: "Rangoli night",          note: "Lotus rangoli and a tower of diyas.",                     sketch: (S) => renderPage8Sketch(S) },
-  { id: 9,  photo: "photos/p09.jpg", thumb: "thumbs/p09.jpg", title: "Diyas, three ways",      note: "A plate of lamps under marigold torans.",                 sketch: (S) => renderPage9Sketch(S) },
-  { id: 10, photo: "photos/p10.jpg", thumb: "thumbs/p10.jpg", title: "Rath in the rain",       note: "Festival chariot, umbrellas, wet streetlights.",          sketch: (S) => renderPage10Sketch(S) },
-  { id: 11, photo: "photos/p11.jpg", thumb: "thumbs/p11.jpg", title: "Monsoon lookout",        note: "Camo umbrella over the green valley.",                    sketch: (S) => renderPage11Sketch(S) },
-  { id: 12, photo: "photos/p12.jpg", thumb: "thumbs/p12.jpg", title: "The giant haul truck",   note: "Tyres taller than a person, red earth everywhere.",       sketch: (S) => renderPage12Sketch(S) },
-  { id: 13, photo: "photos/p13.jpg", thumb: "thumbs/p13.jpg", title: "Black and red",          note: "Cotton saree, red border, fields beyond.",                sketch: (S) => renderPage13Sketch(S) },
-  { id: 14, photo: "photos/p14.jpg", thumb: "thumbs/p14.jpg", title: "At Chitrakote",          note: "The falls in full monsoon flow.",                         sketch: (S) => renderPage14Sketch(S) },
+  { id: 1,  photo: "photos/p01.webp", thumb: "thumbs/p01.webp", title: "Blue hour at the mural", note: "Halter blue against painted blossoms and a striped moon.", sketch: (S) => renderPage1Sketch(S) },
+  { id: 2,  photo: "photos/p02.webp", thumb: "thumbs/p02.webp", title: "Festival lights",        note: "Wine-red and gold under violet fairy lights.",            sketch: (S) => renderPage2Sketch(S) },
+  { id: 3,  photo: "photos/p03.webp", thumb: "thumbs/p03.webp", title: "Powder-blue saree",      note: "Lace border, teal blouse, pearl drops.",                  sketch: (S) => renderPage3Sketch(S) },
+  { id: 4,  photo: "photos/p04.webp", thumb: "thumbs/p04.webp", title: "River day",              note: "Life jacket on, jade-green water behind.",               sketch: (S) => renderPage4Sketch(S) },
+  { id: 5,  photo: "photos/p05.webp", thumb: "thumbs/p05.webp", title: "By the water",           note: "Peony print and a quiet smile.",                          sketch: (S) => renderPage5Sketch(S) },
+  { id: 6,  photo: "photos/p06.webp", thumb: "thumbs/p06.webp", title: "Red kurta, pine walls",  note: "Embroidered red, a gold watch, warm wood.",               sketch: (S) => renderPage6Sketch(S) },
+  { id: 7,  photo: "photos/p07.webp", thumb: "thumbs/p07.webp", title: "The heart wall",         note: "Night-garden florals against a green wall.",              sketch: (S) => renderPage7Sketch(S) },
+  { id: 8,  photo: "photos/p08.webp", thumb: "thumbs/p08.webp", title: "Rangoli night",          note: "Lotus rangoli and a tower of diyas.",                     sketch: (S) => renderPage8Sketch(S) },
+  { id: 9,  photo: "photos/p09.webp", thumb: "thumbs/p09.webp", title: "Diyas, three ways",      note: "A plate of lamps under marigold torans.",                 sketch: (S) => renderPage9Sketch(S) },
+  { id: 10, photo: "photos/p10.webp", thumb: "thumbs/p10.webp", title: "Rath in the rain",       note: "Festival chariot, umbrellas, wet streetlights.",          sketch: (S) => renderPage10Sketch(S) },
+  { id: 11, photo: "photos/p11.webp", thumb: "thumbs/p11.webp", title: "Monsoon lookout",        note: "Camo umbrella over the green valley.",                    sketch: (S) => renderPage11Sketch(S) },
+  { id: 12, photo: "photos/p12.webp", thumb: "thumbs/p12.webp", title: "The giant haul truck",   note: "Tyres taller than a person, red earth everywhere.",       sketch: (S) => renderPage12Sketch(S) },
+  { id: 13, photo: "photos/p13.webp", thumb: "thumbs/p13.webp", title: "Black and red",          note: "Cotton saree, red border, fields beyond.",                sketch: (S) => renderPage13Sketch(S) },
+  { id: 14, photo: "photos/p14.webp", thumb: "thumbs/p14.webp", title: "At Chitrakote",          note: "The falls in full monsoon flow.",                         sketch: (S) => renderPage14Sketch(S) },
 ];
+
+/* Cover and last page. Edit the html here to change the words. */
+const coverPage = {
+  id: 0, kind: "cover", title: "Cover", label: "Cover", sketch: (S) => renderCoverSketch(S),
+  status: "Two sunflowers, as they should be",
+  html: `<p class="eyebrow">A sketchbook for</p>
+    <p class="name">Neelam</p>
+    <p class="lede">Two sunflowers on the first page, two on the last, and fourteen pages of you in between.</p>
+    <p class="hint"><button type="button" data-go="1">Open the book →</button></p>`
+};
+const endPage = {
+  id: 15, kind: "end", title: "The last page", label: "Last page", sketch: (S) => renderEndSketch(S),
+  status: "Still a pair",
+  html: `<p class="eyebrow">The last page</p>
+    <p class="letter">Someone once told me sunflowers should always be given in pairs. So here are two: one for every page you have already filled with light, and one for all the pages still to come.</p>
+    <p class="sig">— Ayush</p>
+    <p class="hint"><button type="button" data-go="0">Back to the cover</button></p>`
+};
+const pages = [coverPage, ...sketchbookData, endPage];
 
 /* ==========================================================================
    SKETCH RECORDER — builds a list of drawing ops (lines, washes, text)
@@ -612,7 +679,7 @@ function clearCanvas() { ctx.setTransform(DPR, 0, 0, DPR, 0, 0); ctx.clearRect(0
 const opsCache = {};
 function getOps(pageId) {
   if (opsCache[pageId]) return opsCache[pageId];
-  const page = sketchbookData[pageId - 1];
+  const page = pages[pageId];
   const S = new Sketch(pageId * 7919);
   if (typeof page.sketch === "function") page.sketch(S); else renderPlaceholderSketch(pageId, S);
   return (opsCache[pageId] = S.ops);
@@ -624,7 +691,7 @@ function drawAll(pageId) { clearCanvas(); getOps(pageId).forEach(op => drawOp(op
 function stopAnim() { if (animId) cancelAnimationFrame(animId); animId = null; animState = null; }
 function playSketch(pageId, animate) {
   stopAnim();
-  const hasSketch = typeof sketchbookData[pageId - 1].sketch === "function";
+  const hasSketch = typeof pages[pageId].sketch === "function";
   if (!animate || reduceMotion) { drawAll(pageId); setStatus(pageId, true); return; }
   clearCanvas();
   const ops = getOps(pageId);
@@ -649,14 +716,17 @@ function playSketch(pageId, animate) {
 }
 function finishNow() { if (animState) { const id = animState.pageId; stopAnim(); drawAll(id); setStatus(id, true); } }
 function setStatus(pageId, done) {
-  const has = typeof sketchbookData[pageId - 1].sketch === "function";
+  const pg = pages[pageId], has = typeof pg.sketch === "function";
   const n = getOps(pageId).length;
-  statusEl.textContent = has ? `Finished · ${n} strokes and washes` : "Placeholder page · the sketch function is still empty";
+  statusEl.textContent = pg.status ? pg.status : has ? `Finished · ${n} strokes and washes` : "Placeholder page · the sketch function is still empty";
   document.getElementById("sketchState").textContent = has ? "ink & wash" : "pencil guides";
 }
 
 /* Doodles (kept in memory per page) */
-const doodles = {};
+const DOODLE_KEY = "sunflowers-doodles-v1";
+let doodles = {};
+try { doodles = JSON.parse(localStorage.getItem(DOODLE_KEY) || "{}") || {}; } catch (e) { doodles = {}; }
+function saveDoodles() { try { localStorage.setItem(DOODLE_KEY, JSON.stringify(doodles, (k, v) => typeof v === "number" ? Math.round(v * 10) / 10 : v)); } catch (e) {} }
 let doodleOn = false, drawing = null;
 function drawDoodles(pageId) {
   (doodles[pageId] || []).forEach(st => drawOp({ t: "line", pts: st, w: 2, c: "#33407a", a: 0.85 }));
@@ -671,41 +741,53 @@ canvas.addEventListener("pointermove", e => {
   if (!drawing) return; const p = toCanvas(e); drawing.push(p);
   const n = drawing.length; if (n > 1) drawOp({ t: "line", pts: drawing, w: 2, c: "#33407a", a: 0.85 }, n - 2, n - 1);
 });
-const endStroke = () => { drawing = null; };
+const endStroke = () => { if (drawing) saveDoodles(); drawing = null; };
 canvas.addEventListener("pointerup", endStroke); canvas.addEventListener("pointercancel", endStroke);
 
 /* ==========================================================================
    NAVIGATION
    ========================================================================== */
-let current = 1;
+let current = 0;
 const visited = new Set();
 const photo = document.getElementById("photo");
 const strip = document.getElementById("filmstrip");
 const spread = document.getElementById("spread");
+const stage = document.getElementById("stage");
+const cmpPhoto = document.getElementById("cmpPhoto");
+const notePage = document.getElementById("notePage");
+const LAST = pages.length - 1;
 
-sketchbookData.forEach(p => {
+pages.forEach((p, idx) => {
   const b = document.createElement("button");
-  b.className = "frame"; b.type = "button"; b.dataset.id = p.id;
-  b.setAttribute("aria-label", `Page ${p.id}: ${p.title}`);
-  b.innerHTML = `<img src="${p.thumb}" alt="" loading="lazy"><span>${String(p.id).padStart(2, "0")}</span>${typeof p.sketch === "function" ? '<i class="dot"></i>' : ""}`;
-  b.addEventListener("click", () => goTo(p.id));
+  b.className = "frame" + (p.kind ? " special" : ""); b.type = "button"; b.dataset.id = idx;
+  b.setAttribute("aria-label", p.kind ? p.title : `Page ${p.id}: ${p.title}`);
+  b.innerHTML = p.kind ? `<span>${p.label}</span>` : `<img src="${p.thumb}" alt="" loading="lazy"><span>${String(p.id).padStart(2, "0")}</span><i class="dot"></i>`;
+  b.addEventListener("click", () => goTo(idx));
   strip.appendChild(b);
 });
+notePage.addEventListener("click", e => { const b = e.target.closest("[data-go]"); if (b) goTo(+b.dataset.go); });
 
 function goTo(id, opts = {}) {
-  id = Math.max(1, Math.min(sketchbookData.length, id));
+  id = Math.max(0, Math.min(LAST, id));
   const dir = id > current ? "next" : id < current ? "prev" : null;
   current = id;
-  const p = sketchbookData[id - 1];
-  photo.classList.add("loading");
-  photo.onload = () => photo.classList.remove("loading");
-  photo.src = p.photo;
-  photo.alt = `Photo ${id}: ${p.title}`;
-  document.getElementById("pageNo").textContent = String(id).padStart(2, "0");
-  document.getElementById("pageTitle").textContent = p.title;
-  document.getElementById("pageNote").textContent = p.note;
-  document.getElementById("prevBtn").disabled = id === 1;
-  document.getElementById("nextBtn").disabled = id === sketchbookData.length;
+  const p = pages[id];
+  spread.dataset.kind = p.kind || "photo";
+  document.getElementById("leftLabel").textContent = p.kind ? p.label : "Photograph";
+  document.getElementById("pageCount").innerHTML = p.kind ? "" : `No. <b id="pageNo">${String(id).padStart(2, "0")}</b> / 14`;
+  if (p.kind) {
+    notePage.innerHTML = p.html;
+    setCompare(false);
+  } else {
+    photo.classList.add("loading");
+    photo.onload = () => photo.classList.remove("loading");
+    photo.src = p.photo; cmpPhoto.src = p.photo;
+    photo.alt = `Photo ${id}: ${p.title}`;
+    document.getElementById("pageTitle").textContent = p.title;
+    document.getElementById("pageNote").textContent = p.note;
+  }
+  document.getElementById("prevBtn").disabled = id === 0;
+  document.getElementById("nextBtn").disabled = id === LAST;
   strip.querySelectorAll(".frame").forEach(f => {
     const on = +f.dataset.id === id; f.setAttribute("aria-current", on ? "true" : "false");
     if (on && !opts.initial) f.scrollIntoView({ behavior: reduceMotion ? "auto" : "smooth", inline: "center", block: "nearest" });
@@ -713,8 +795,38 @@ function goTo(id, opts = {}) {
   if (dir && !reduceMotion) { spread.classList.remove("flip-next", "flip-prev"); void spread.offsetWidth; spread.classList.add("flip-" + dir); }
   const first = !visited.has(id); visited.add(id);
   playSketch(id, first);
+  [id + 1, id - 1].forEach(n => { const q = pages[n]; if (q && q.photo) { const im = new Image(); im.src = q.photo; } });
   try { history.replaceState(null, "", "#p" + id); } catch (e) {}
 }
+
+/* Compare: wipe between the photo and the sketch */
+const compareBtn = document.getElementById("compareBtn");
+let comparing = false, cmpDrag = false;
+function setCompare(on) {
+  comparing = on && !pages[current].kind;
+  stage.classList.toggle("comparing", comparing);
+  compareBtn.setAttribute("aria-pressed", comparing);
+  if (comparing) { if (doodleOn) toggleDoodle(); finishNow(); stage.style.setProperty("--cut", "50%"); statusEl.textContent = "Drag across the page to compare photo and sketch"; }
+  else if (!animState) setStatus(current, true);
+}
+function setCut(e) { const r = stage.getBoundingClientRect(); const x = Math.max(0, Math.min(1, (e.clientX - r.left) / r.width)); stage.style.setProperty("--cut", (x * 100).toFixed(1) + "%"); }
+stage.addEventListener("pointerdown", e => { if (!comparing) return; cmpDrag = true; stage.setPointerCapture(e.pointerId); setCut(e); });
+stage.addEventListener("pointermove", e => { if (cmpDrag) setCut(e); });
+["pointerup", "pointercancel"].forEach(t => stage.addEventListener(t, () => { cmpDrag = false; }));
+compareBtn.addEventListener("click", () => setCompare(!comparing));
+
+/* Swipe to turn pages on touch screens */
+let touchX = null, touchY = null;
+spread.addEventListener("touchstart", e => {
+  if ((doodleOn || comparing) && e.target.closest(".stage")) { touchX = null; return; }
+  touchX = e.touches[0].clientX; touchY = e.touches[0].clientY;
+}, { passive: true });
+spread.addEventListener("touchend", e => {
+  if (touchX === null) return;
+  const dx = e.changedTouches[0].clientX - touchX, dy = e.changedTouches[0].clientY - touchY;
+  if (Math.abs(dx) > 60 && Math.abs(dx) > Math.abs(dy) * 1.5) goTo(current + (dx < 0 ? 1 : -1));
+  touchX = null;
+}, { passive: true });
 
 document.getElementById("prevBtn").addEventListener("click", () => goTo(current - 1));
 document.getElementById("nextBtn").addEventListener("click", () => goTo(current + 1));
@@ -722,17 +834,19 @@ document.getElementById("replayBtn").addEventListener("click", () => playSketch(
 document.getElementById("finishBtn").addEventListener("click", finishNow);
 const doodleBtn = document.getElementById("doodleBtn");
 function toggleDoodle() {
+  if (!doodleOn && comparing) setCompare(false);
   doodleOn = !doodleOn; doodleBtn.setAttribute("aria-pressed", doodleOn); canvas.classList.toggle("doodling", doodleOn);
   statusEl.textContent = doodleOn ? "Doodle mode · draw straight onto the page" : statusEl.textContent;
 }
 doodleBtn.addEventListener("click", toggleDoodle);
-document.getElementById("clearBtn").addEventListener("click", () => { doodles[current] = []; stopAnim(); drawAll(current); });
+document.getElementById("clearBtn").addEventListener("click", () => { doodles[current] = []; saveDoodles(); stopAnim(); drawAll(current); });
 document.addEventListener("keydown", e => {
   if (e.target.closest("input, textarea")) return;
   if (e.key === "ArrowRight") goTo(current + 1);
   else if (e.key === "ArrowLeft") goTo(current - 1);
   else if (e.key.toLowerCase() === "r") playSketch(current, true);
   else if (e.key.toLowerCase() === "d") toggleDoodle();
+  else if (e.key.toLowerCase() === "c") setCompare(!comparing);
 });
 
 /* ==========================================================================
@@ -819,7 +933,7 @@ soundBtn.addEventListener("click", async () => {
 });
 
 /* boot */
-const startId = (() => { const m = /^#p(\d{1,2})$/.exec(location.hash); return m ? +m[1] : 1; })();
+const startId = (() => { const m = /^#p(\d{1,2})$/.exec(location.hash); return m ? +m[1] : 0; })();
 const boot = () => goTo(startId, { initial: true });
 (document.fonts && document.fonts.ready ? document.fonts.ready : Promise.resolve()).then(boot, boot);
 </script>

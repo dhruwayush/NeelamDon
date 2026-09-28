@@ -787,3 +787,105 @@ function renderPage14Sketch(S) {
   S.wash(pony, { c: "#7a3030", a: 0.12, layers: 1, spread: 1, edge: false });
   sign(S, "p.14 · at Chitrakote", 140, 40);
 }
+
+/* ---------- SUNFLOWERS · cover and last page ---------- */
+const PETAL = "#f2b31d", PETAL2 = "#e0861a", SEED = "#5a3b1c", STEM = "#5f8a3a";
+/* One sunflower head. squash < 1 tips the face away; tilt rotates it. Returns its outline. */
+function sunflower(S, cx, cy, r, tilt = 0, squash = 0.9) {
+  const c = Math.cos(tilt), s = Math.sin(tilt);
+  const T = ([x, y]) => [cx + x * c - y * squash * s, cy + x * s + y * squash * c];
+  const map = pts => pts.map(T);
+  const petals = [];
+  for (let ring = 1; ring >= 0; ring--) {
+    const n = 21;
+    for (let i = 0; i < n; i++) {
+      const a = i / n * Math.PI * 2 + ring * (Math.PI / n) + S.rand(-0.06, 0.06);
+      const len = r * (ring ? 0.56 : 0.64) * S.rand(0.88, 1.08), base = r * 0.36;
+      const pts = map(S.petal(Math.cos(a) * base, Math.sin(a) * base, a + S.rand(-0.08, 0.08), len, r * 0.19, true));
+      petals.push([pts, ring]);
+      S.line(pts, { w: 1.1, c: INK, a: ring ? 0.55 : 0.8, closed: true, jit: 0.5 });
+      if (!ring) S.line(map([[Math.cos(a) * base * 1.1, Math.sin(a) * base * 1.1], [Math.cos(a) * (base + len * 0.7), Math.sin(a) * (base + len * 0.7)]]), { w: 0.5, c: "#8a5a14", a: 0.4, jit: 0.3 });
+    }
+  }
+  const disk = map(S.ellipse(0, 0, r * 0.4, r * 0.4, 0, 28));
+  S.line(disk, { w: 1.4, c: INK, closed: true, passes: 2, jit: 0.5 });
+  S.line(map(S.ellipse(0, 0, r * 0.3, r * 0.3, 0, 22)), { w: 0.8, c: INK, a: 0.45, closed: true, jit: 0.6 });
+  petals.forEach(([p, ring]) => S.wash(p, { c: ring ? PETAL2 : PETAL, a: ring ? 0.4 : 0.45, layers: 2, spread: 0.8 }));
+  petals.filter(([, ring]) => !ring).forEach(([p]) => S.wash(p.slice(0, Math.ceil(p.length / 2)).concat(p.slice(-3)), { c: PETAL2, a: 0.14, layers: 1, spread: 0.5, edge: false }));
+  S.wash(disk, { c: SEED, a: 0.45, layers: 3, spread: 1 });
+  S.wash(map(S.ellipse(0, 0, r * 0.24, r * 0.24, 0, 18)), { c: "#2e1d0f", a: 0.35, layers: 2, spread: 1, edge: false });
+  const N = Math.round(r * 1.7);
+  for (let k = 1; k < N; k++) {
+    const rr = r * 0.38 * Math.sqrt(k / N), ang = k * 2.39996;
+    const [x, y] = T([Math.cos(ang) * rr, Math.sin(ang) * rr]);
+    S.line(S.ellipse(x, y, 1.3, 1.3, 0, 5), { w: 1, c: k % 3 ? "#2e1d0f" : "#b8892e", a: 0.7, closed: true, step: 1, tremor: 0 });
+  }
+  return disk;
+}
+function stemLeaf(S, stem, t, side, len) {
+  const i = Math.floor(t * (stem.length - 2)), [x1, y1] = stem[i], [x2, y2] = stem[i + 1];
+  const ang = Math.atan2(y2 - y1, x2 - x1) + side * 1.0;
+  const lf = S.petal(x1, y1, ang, len, len * 0.46, true);
+  S.line(lf, { w: 1.1, c: INK, closed: true, a: 0.8, jit: 0.5 });
+  S.line([[x1, y1], [x1 + Math.cos(ang) * len * 0.85, y1 + Math.sin(ang) * len * 0.85]], { w: 0.7, c: INK, a: 0.5, jit: 0.4 });
+  for (let k = 1; k < 4; k++) { const d = len * k / 4.5, bx = x1 + Math.cos(ang) * d, by = y1 + Math.sin(ang) * d; [-1, 1].forEach(sd => S.line([[bx, by], [bx + Math.cos(ang + sd * 0.7) * len * 0.16, by + Math.sin(ang + sd * 0.7) * len * 0.16]], { w: 0.5, c: INK, a: 0.35, jit: 0.2, step: 2 })); }
+  return lf;
+}
+function stemLine(S, ctrl) {
+  ink(S, ctrl, { w: 1.3 });
+  const offs = ctrl.map(([x, y]) => [x + 7, y]);
+  ink(S, offs, { w: 1.1, passes: 1, a: 0.7 });
+  return S.spline(ctrl, 6);
+}
+
+function renderCoverSketch(S) {
+  guide(S, S.ellipse(230, 250, 125, 115, -0.2, 24), { closed: true, a: 0.18 });
+  guide(S, S.ellipse(395, 350, 108, 92, 0.25, 24), { closed: true, a: 0.18 });
+  guide(S, [[230, 360], [306, 680]]); guide(S, [[390, 440], [300, 680]]);
+  const s1 = stemLine(S, [[236, 356], [262, 470], [300, 600], [322, 700], [336, 790]]);
+  const s2 = stemLine(S, [[382, 432], [352, 520], [318, 610], [292, 700], [276, 790]]);
+  const leaves = [stemLeaf(S, s1, 0.28, -1, 92), stemLeaf(S, s1, 0.62, 1, 70), stemLeaf(S, s2, 0.22, 1, 84), stemLeaf(S, s2, 0.55, -1, 76)];
+  sunflower(S, 230, 250, 128, -0.22, 0.92);
+  sunflower(S, 395, 350, 110, 0.28, 0.84);
+  // ribbon where the stems cross
+  const RIB = "#33407a";
+  const knot = S.ellipse(308, 648, 9, 7, 0.2, 12);
+  const loopL = [[304, 646], [262, 618], [250, 640], [266, 664], [304, 652]];
+  const loopR = [[312, 646], [352, 612], [368, 634], [352, 662], [312, 652]];
+  const tailL = [[304, 654], [284, 700], [272, 742], [286, 736], [300, 704], [310, 656]];
+  const tailR = [[312, 654], [330, 698], [350, 736], [336, 744], [322, 702], [306, 656]];
+  [loopL, loopR, tailL, tailR].forEach(p => ink(S, p, { closed: true, w: 1.1, c: "#1f2650", passes: 1 }));
+  inkC(S, knot, { w: 1.1, c: "#1f2650", passes: 1 });
+  S.wash([[236, 356], [262, 470], [300, 600], [322, 700], [336, 790], [343, 790], [329, 700], [307, 600], [269, 470], [243, 356]], { c: STEM, a: 0.35, layers: 2, spread: 0.5 });
+  S.wash([[382, 432], [352, 520], [318, 610], [292, 700], [276, 790], [283, 790], [299, 700], [325, 610], [359, 520], [389, 432]], { c: STEM, a: 0.35, layers: 2, spread: 0.5 });
+  leaves.forEach(l => S.wash(l, { c: S.r() > 0.5 ? "#6e9a44" : "#5f8a3a", a: 0.38, layers: 2, spread: 1 }));
+  [loopL, loopR, tailL, tailR, knot].forEach(p => S.wash(p, { c: RIB, a: 0.45, layers: 2, spread: 0.5 }));
+  S.text("always in pairs", 470, 560, { size: 22, c: "#33407a", rot: -0.08 });
+  S.line([[418, 570], [390, 600], [350, 628]], { w: 0.9, c: "#5b534b", a: 0.6, jit: 0.4 });
+  S.line([[362, 616], [349, 629], [366, 632]], { w: 0.9, c: "#5b534b", a: 0.6, jit: 0.3, step: 1.5 });
+}
+
+function renderEndSketch(S) {
+  // a glass jar holding the pair
+  const jar = [[210, 560], [390, 560], [398, 600], [404, 740], [392, 780], [208, 780], [196, 740], [202, 600]];
+  guide(S, jar, { closed: true, a: 0.2 });
+  const s1 = stemLine(S, [[228, 330], [250, 440], [276, 560], [288, 680], [290, 770]]);
+  const s2 = stemLine(S, [[392, 290], [370, 420], [334, 560], [316, 680], [312, 770]]);
+  const leaves = [stemLeaf(S, s1, 0.35, -1, 80), stemLeaf(S, s2, 0.3, 1, 84), stemLeaf(S, s2, 0.52, -1, 60)];
+  sunflower(S, 222, 250, 112, -0.35, 0.86);
+  sunflower(S, 396, 214, 104, 0.3, 0.9);
+  inkC(S, jar, { w: 1.5 });
+  ink(S, [[210, 560], [214, 548], [386, 548], [390, 560]], { w: 1.2 });
+  ink(S, [[206, 622], [394, 622]], { w: 0.9, a: 0.55, passes: 1 });
+  [[226, 600, 236, 760], [372, 604, 380, 740]].forEach(([a, b, c, d]) => S.line([[a, b], [c, d]], { w: 3, c: "#ffffff", a: 0.6, step: 4 }));
+  S.line([[190, 790], [410, 790]], { w: 1, c: INK, a: 0.5, jit: 0.8 });
+  S.hatch([180, 780, 430, 800], -0.3, 5, { w: 0.6, c: INK, a: 0.3, clip: [{ ellipse: [300, 790, 120, 8] }] });
+  S.wash([[228, 330], [250, 440], [276, 560], [288, 680], [290, 770], [297, 770], [295, 680], [283, 560], [257, 440], [235, 330]], { c: STEM, a: 0.35, layers: 2, spread: 0.5 });
+  S.wash([[392, 290], [370, 420], [334, 560], [316, 680], [312, 770], [319, 770], [323, 680], [341, 560], [377, 420], [399, 290]], { c: STEM, a: 0.35, layers: 2, spread: 0.5 });
+  leaves.forEach(l => S.wash(l, { c: "#6e9a44", a: 0.38, layers: 2, spread: 1 }));
+  S.wash(jar, { c: "#bcd6de", a: 0.14, layers: 2, spread: 1 });
+  S.wash([[206, 622], [394, 622], [402, 740], [392, 780], [208, 780], [198, 740]], { c: "#9cc5d3", a: 0.18, layers: 2, spread: 1 });
+  // a few fallen petals
+  [[120, 760, 0.3], [470, 772, -0.6], [505, 750, 2.2]].forEach(([x, y, a]) => { const p = S.petal(x, y, a, 34, 12, true); ink(S, p, { closed: true, w: 0.9, passes: 1 }); S.wash(p, { c: PETAL, a: 0.45, layers: 2, spread: 0.4 }); });
+  S.text("fin.", 480, 480, { size: 28, c: "#33407a", rot: -0.08 });
+}
