@@ -1,0 +1,828 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Marigold &amp; Monsoon Sketchbook</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Kalam:wght@300;400;700&family=Young+Serif&family=Courier+Prime:wght@400;700&display=swap">
+<script src="https://cdn.tailwindcss.com/3.4.16"></script>
+<style>
+  /* Deliberately single-theme: a sketchbook lying open on a dark desk. */
+  :root {
+    color-scheme: light;
+    --desk: #2f2a25;
+    --desk-2: #3a332c;
+    --paper: #f2e8d5;
+    --paper-edge: #e3d5bb;
+    --ink: #27211d;
+    --ink-soft: #5b534b;
+    --indigo: #33407a;
+    --rose: #d59c98;
+    --sage: #a3b494;
+    --marigold: #e39a2d;
+    --grain: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='220' height='220'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 .35  0 0 0 0 .27  0 0 0 0 .18  0 0 0 .09 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+    --fibres: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='400' height='400'%3E%3Cfilter id='f'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.012 .09' numOctaves='2' seed='4'/%3E%3CfeColorMatrix values='0 0 0 0 .45  0 0 0 0 .35  0 0 0 0 .22  0 0 0 .06 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23f)'/%3E%3C/svg%3E");
+  }
+  html, body { height: auto; }
+  body {
+    background:
+      radial-gradient(ellipse at 50% 30%, rgba(255,220,170,.08), transparent 60%),
+      var(--grain),
+      linear-gradient(180deg, var(--desk-2), var(--desk));
+    color: var(--paper);
+    font-family: "Courier Prime", ui-monospace, monospace;
+    padding-inline: 16px;
+    padding-block: 20px 28px;
+    min-height: 100%;
+  }
+  .hand { font-family: "Kalam", "Segoe Print", "Comic Sans MS", cursive; }
+  .display { font-family: "Young Serif", Georgia, serif; }
+
+  /* Header */
+  .masthead { max-width: 1180px; margin-inline: auto; display: flex; align-items: flex-end; justify-content: space-between; gap: 16px; flex-wrap: wrap; }
+  .masthead h1 { font-size: clamp(26px, 4vw, 40px); line-height: 1.05; letter-spacing: -.01em; color: #f6ecd9; text-wrap: balance; }
+  .masthead h1 em { font-style: normal; color: var(--marigold); }
+  .masthead p { color: #cbbda6; font-size: 13px; letter-spacing: .02em; margin-top: 6px; }
+  .sound {
+    display: inline-flex; align-items: center; gap: 10px; cursor: pointer;
+    border: 1.5px solid rgba(242,232,213,.35); border-radius: 999px; padding: 8px 14px 8px 10px;
+    color: #f2e8d5; font-size: 13px; letter-spacing: .06em; text-transform: uppercase; background: rgba(0,0,0,.15);
+    transition: border-color .2s, background .2s;
+  }
+  .sound:hover { border-color: var(--marigold); }
+  .sound[aria-pressed="true"] { background: rgba(227,154,45,.16); border-color: var(--marigold); }
+  .sound svg path { transition: d .3s; }
+  .sound .bars rect { transform-origin: bottom; transform-box: fill-box; }
+  .sound[aria-pressed="true"] .bars rect { animation: eq 1.4s ease-in-out infinite; }
+  .sound[aria-pressed="true"] .bars rect:nth-child(2) { animation-delay: -.5s; }
+  .sound[aria-pressed="true"] .bars rect:nth-child(3) { animation-delay: -.9s; }
+  @keyframes eq { 0%,100% { transform: scaleY(.35); } 50% { transform: scaleY(1); } }
+
+  /* Book */
+  .book { max-width: 1180px; margin: 22px auto 0; display: grid; grid-template-columns: 56px 1fr 56px; align-items: center; gap: 14px; }
+  .arrow {
+    width: 56px; height: 56px; border-radius: 50%; display: grid; place-items: center; cursor: pointer;
+    color: #f2e8d5; background: rgba(0,0,0,.18); border: 1.5px dashed rgba(242,232,213,.35);
+    transition: transform .2s, color .2s, border-color .2s;
+  }
+  .arrow:hover:not(:disabled) { color: var(--marigold); border-color: var(--marigold); transform: scale(1.06) rotate(-3deg); }
+  .arrow:disabled { opacity: .3; cursor: default; }
+  .arrow svg { width: 34px; height: 34px; }
+
+  .spread {
+    display: grid; grid-template-columns: 1fr 1fr; position: relative;
+    background: var(--paper);
+    border-radius: 6px 6px 10px 10px;
+    box-shadow: 0 2px 0 var(--paper-edge), 0 4px 0 #d8c8aa, 0 6px 0 #cdbb9b, 0 30px 60px -20px rgba(0,0,0,.7), 0 10px 20px rgba(0,0,0,.35);
+    perspective: 1800px;
+  }
+  .page {
+    position: relative; padding: 26px 28px 22px; color: var(--ink);
+    background: var(--fibres), var(--grain), var(--paper);
+    display: flex; flex-direction: column; gap: 12px; min-width: 0;
+  }
+  .page.left { border-radius: 6px 0 0 10px; box-shadow: inset -40px 0 40px -30px rgba(90,65,35,.35); }
+  .page.right { border-radius: 0 6px 10px 0; box-shadow: inset 40px 0 40px -30px rgba(90,65,35,.35); transform-origin: left center; }
+  .spread::after { /* stitched gutter */
+    content: ""; position: absolute; top: 18px; bottom: 18px; left: 50%; width: 2px; transform: translateX(-1px);
+    background: repeating-linear-gradient(180deg, rgba(120,90,60,.55) 0 9px, transparent 9px 18px);
+  }
+  .page-head { display: flex; justify-content: space-between; align-items: baseline; gap: 12px; font-size: 12px; letter-spacing: .12em; text-transform: uppercase; color: var(--ink-soft); }
+  .page-head b { color: var(--indigo); font-weight: 700; }
+
+  .mount-wrap { flex: 1; display: grid; place-items: center; padding-block: 10px; min-height: 0; }
+  .mount {
+    position: relative; background: #fbf6ec; padding: 12px 12px 14px; transform: rotate(-1.4deg);
+    box-shadow: 0 1px 1px rgba(0,0,0,.12), 0 8px 18px -6px rgba(60,40,20,.4);
+    max-width: 100%;
+  }
+  .mount img { display: block; max-width: 100%; max-height: min(600px, 66vh); width: auto; height: auto; transition: opacity .35s; }
+  .mount img.loading { opacity: 0; }
+  .tape { position: absolute; width: 96px; height: 26px; opacity: .82; mix-blend-mode: multiply;
+    clip-path: polygon(3% 0, 97% 4%, 100% 30%, 96% 55%, 100% 80%, 96% 100%, 4% 96%, 0 70%, 4% 45%, 0 18%); }
+  .tape.t1 { top: -12px; left: -26px; transform: rotate(-32deg); background: repeating-linear-gradient(90deg, var(--rose) 0 8px, #e2b4ad 8px 16px); }
+  .tape.t2 { bottom: -10px; right: -24px; transform: rotate(-28deg); background: var(--sage); }
+
+  .caption h2 { font-size: clamp(22px, 2.6vw, 30px); line-height: 1.1; color: var(--indigo); transform: rotate(-.8deg); }
+  .caption p { font-size: 17px; color: var(--ink-soft); line-height: 1.35; margin-top: 2px; }
+
+  .toolbar { display: flex; gap: 8px; flex-wrap: wrap; }
+  .tool {
+    font: 700 11.5px/1 "Courier Prime", monospace; letter-spacing: .1em; text-transform: uppercase;
+    padding: 8px 11px; border: 1.3px solid rgba(39,33,29,.45); border-radius: 3px; color: var(--ink); cursor: pointer;
+    background: rgba(255,255,255,.25); transition: background .2s, color .2s, border-color .2s;
+  }
+  .tool:hover { border-color: var(--indigo); color: var(--indigo); }
+  .tool[aria-pressed="true"] { background: var(--indigo); border-color: var(--indigo); color: #f2e8d5; }
+  .tool:focus-visible, .arrow:focus-visible, .sound:focus-visible, .frame:focus-visible { outline: 2px solid var(--marigold); outline-offset: 3px; }
+
+  .canvas-wrap { flex: 1; display: grid; place-items: center; }
+  canvas#sketch { width: 100%; max-width: 470px; aspect-ratio: 3 / 4; height: auto; display: block; }
+  canvas#sketch.doodling { cursor: crosshair; touch-action: none; }
+  .status { font-size: 15px; color: var(--ink-soft); min-height: 1.4em; }
+
+  .flip-next .page.right { animation: flipIn .7s cubic-bezier(.2,.7,.2,1); }
+  .flip-prev .page.left { animation: flipInL .7s cubic-bezier(.2,.7,.2,1); }
+  @keyframes flipIn { from { transform: rotateY(-14deg); opacity: .4; } to { transform: none; opacity: 1; } }
+  @keyframes flipInL { from { transform: rotateY(14deg); opacity: .4; transform-origin: right center; } to { transform: none; opacity: 1; } }
+
+  /* Filmstrip */
+  .strip-wrap { max-width: 1180px; margin: 30px auto 0; }
+  .strip-label { font-size: 11.5px; letter-spacing: .16em; text-transform: uppercase; color: #bcae96; margin-bottom: 8px; display: flex; justify-content: space-between; gap: 12px; }
+  .filmstrip {
+    display: flex; gap: 10px; overflow-x: auto; padding: 16px 14px; scroll-snap-type: x proximity;
+    background:
+      radial-gradient(circle at 50% 50%, #0f0d0b 3.2px, transparent 3.6px) 0 3px / 18px 12px repeat-x,
+      radial-gradient(circle at 50% 50%, #0f0d0b 3.2px, transparent 3.6px) 0 calc(100% - 3px) / 18px 12px repeat-x,
+      #1d1a17;
+    border-radius: 4px; scrollbar-width: thin; scrollbar-color: #5a4f43 transparent;
+  }
+  .frame {
+    flex: 0 0 auto; position: relative; width: 74px; height: 92px; cursor: pointer; scroll-snap-align: center;
+    border-radius: 2px; overflow: hidden; background: #2b2723; outline: 1px solid rgba(255,255,255,.05);
+    transition: transform .2s, box-shadow .2s;
+  }
+  .frame img { width: 100%; height: 100%; object-fit: cover; filter: sepia(.35) saturate(.8) brightness(.8); transition: filter .25s; }
+  .frame span { position: absolute; left: 5px; bottom: 4px; font: 700 12px/1 "Courier Prime", monospace; color: #f7e9cf; text-shadow: 0 1px 2px #000; }
+  .frame .dot { position: absolute; top: 5px; right: 5px; width: 7px; height: 7px; border-radius: 50%; background: var(--marigold); box-shadow: 0 0 0 2px rgba(0,0,0,.4); }
+  .frame:hover img { filter: none; }
+  .frame:hover { transform: translateY(-2px); }
+  .frame[aria-current="true"] { box-shadow: 0 0 0 2.5px var(--marigold); transform: translateY(-3px); }
+  .frame[aria-current="true"] img { filter: none; }
+
+  .foot { max-width: 1180px; margin: 14px auto 0; color: #a99b84; font-size: 12px; display: flex; gap: 18px; flex-wrap: wrap; }
+  .foot kbd { border: 1px solid #6b5f50; border-radius: 3px; padding: 0 5px; color: #d8cab2; }
+
+  @media (max-width: 820px) {
+    .book { grid-template-columns: 1fr 1fr; }
+    .spread { grid-column: 1 / -1; grid-row: 1; grid-template-columns: 1fr; }
+    .arrow { grid-row: 2; justify-self: center; }
+    .page.left { border-radius: 6px 6px 0 0; box-shadow: inset 0 -30px 30px -26px rgba(90,65,35,.35); }
+    .page.right { border-radius: 0 0 10px 10px; box-shadow: inset 0 30px 30px -26px rgba(90,65,35,.35); }
+    .spread::after { top: 50%; bottom: auto; left: 18px; right: 18px; width: auto; height: 2px;
+      background: repeating-linear-gradient(90deg, rgba(120,90,60,.55) 0 9px, transparent 9px 18px); }
+    .page { padding: 20px 18px 18px; }
+    .mount img { max-height: 58vh; }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .flip-next .page.right, .flip-prev .page.left, .sound[aria-pressed="true"] .bars rect { animation: none; }
+  }
+</style>
+<style>*,*::before,*::after{box-sizing:border-box}body{margin:0}img{max-width:100%}[hidden]{display:none!important}</style>
+</head>
+<body>
+
+<header class="masthead">
+  <div>
+    <h1 class="display">Marigold <em>&amp;</em> Monsoon</h1>
+    <p>Fourteen photographs, redrawn by hand one page at a time.</p>
+  </div>
+  <button class="sound" id="soundBtn" aria-pressed="false" type="button">
+    <svg class="bars" width="22" height="18" viewBox="0 0 22 18" aria-hidden="true">
+      <rect x="2" y="3" width="3.5" height="14" rx="1.5" fill="currentColor"/>
+      <rect x="9" y="1" width="3.5" height="16" rx="1.5" fill="currentColor"/>
+      <rect x="16" y="5" width="3.5" height="12" rx="1.5" fill="currentColor"/>
+    </svg>
+    <span id="soundLabel">Lofi piano · off</span>
+  </button>
+</header>
+
+<main class="book">
+  <button class="arrow" id="prevBtn" type="button" aria-label="Previous page">
+    <svg viewBox="0 0 56 48" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+      <path d="M50 25 C 38 23.5, 24 26, 7 24"/>
+      <path d="M19 12 C 15 17, 11 20.5, 6.5 24 C 11 27, 15 31, 18 37"/>
+    </svg>
+  </button>
+
+  <div class="spread" id="spread">
+    <section class="page left" aria-label="Photograph">
+      <div class="page-head"><span>Photograph</span><span>No. <b id="pageNo">01</b> / 14</span></div>
+      <div class="mount-wrap">
+        <figure class="mount">
+          <span class="tape t1" aria-hidden="true"></span>
+          <span class="tape t2" aria-hidden="true"></span>
+          <img id="photo" alt="" width="895" height="1222">
+        </figure>
+      </div>
+      <div class="caption hand">
+        <h2 id="pageTitle">Blue hour at the mural</h2>
+        <p id="pageNote"></p>
+      </div>
+    </section>
+
+    <section class="page right" aria-label="Sketch">
+      <div class="page-head"><span>Sketch</span><span id="sketchState">ink &amp; wash</span></div>
+      <div class="toolbar">
+        <button class="tool" id="replayBtn" type="button">Replay sketch</button>
+        <button class="tool" id="finishBtn" type="button">Finish now</button>
+        <button class="tool" id="doodleBtn" type="button" aria-pressed="false">Doodle</button>
+        <button class="tool" id="clearBtn" type="button">Clear doodles</button>
+      </div>
+      <div class="canvas-wrap"><canvas id="sketch" width="600" height="800" aria-label="Hand-drawn sketch of the photograph"></canvas></div>
+      <p class="status hand" id="status"></p>
+    </section>
+  </div>
+
+  <button class="arrow" id="nextBtn" type="button" aria-label="Next page">
+    <svg viewBox="0 0 56 48" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+      <path d="M6 23 C 18 25, 32 22, 49 24"/>
+      <path d="M37 11 C 41 16, 45 20.5, 49.5 24 C 45 27.5, 41 31, 38 37"/>
+    </svg>
+  </button>
+</main>
+
+<section class="strip-wrap" aria-label="Pages">
+  <div class="strip-label"><span>Contact sheet</span><span>● sketched</span></div>
+  <nav class="filmstrip" id="filmstrip"></nav>
+</section>
+
+<footer class="foot">
+  <span><kbd>←</kbd> <kbd>→</kbd> turn pages</span>
+  <span><kbd>R</kbd> replay sketch</span>
+  <span><kbd>D</kbd> doodle mode</span>
+</footer>
+
+<script src="pages.js"></script>
+<script>
+/* ==========================================================================
+   DATA — one object per spread. `sketch` is a function (S) => void that
+   records drawing ops onto the Sketch recorder S. Pages without one fall back
+   to renderPlaceholderSketch(pageId, S). Fill them in one page at a time.
+   ========================================================================== */
+const sketchbookData = [
+  { id: 1,  photo: "photos/p01.jpg", thumb: "thumbs/p01.jpg", title: "Blue hour at the mural", note: "Halter blue against painted blossoms and a striped moon.", sketch: (S) => renderPage1Sketch(S) },
+  { id: 2,  photo: "photos/p02.jpg", thumb: "thumbs/p02.jpg", title: "Festival lights",        note: "Wine-red and gold under violet fairy lights.",            sketch: (S) => renderPage2Sketch(S) },
+  { id: 3,  photo: "photos/p03.jpg", thumb: "thumbs/p03.jpg", title: "Powder-blue saree",      note: "Lace border, teal blouse, pearl drops.",                  sketch: (S) => renderPage3Sketch(S) },
+  { id: 4,  photo: "photos/p04.jpg", thumb: "thumbs/p04.jpg", title: "River day",              note: "Life jacket on, jade-green water behind.",               sketch: (S) => renderPage4Sketch(S) },
+  { id: 5,  photo: "photos/p05.jpg", thumb: "thumbs/p05.jpg", title: "By the water",           note: "Peony print and a quiet smile.",                          sketch: (S) => renderPage5Sketch(S) },
+  { id: 6,  photo: "photos/p06.jpg", thumb: "thumbs/p06.jpg", title: "Red kurta, pine walls",  note: "Embroidered red, a gold watch, warm wood.",               sketch: (S) => renderPage6Sketch(S) },
+  { id: 7,  photo: "photos/p07.jpg", thumb: "thumbs/p07.jpg", title: "The heart wall",         note: "Night-garden florals against a green wall.",              sketch: (S) => renderPage7Sketch(S) },
+  { id: 8,  photo: "photos/p08.jpg", thumb: "thumbs/p08.jpg", title: "Rangoli night",          note: "Lotus rangoli and a tower of diyas.",                     sketch: (S) => renderPage8Sketch(S) },
+  { id: 9,  photo: "photos/p09.jpg", thumb: "thumbs/p09.jpg", title: "Diyas, three ways",      note: "A plate of lamps under marigold torans.",                 sketch: (S) => renderPage9Sketch(S) },
+  { id: 10, photo: "photos/p10.jpg", thumb: "thumbs/p10.jpg", title: "Rath in the rain",       note: "Festival chariot, umbrellas, wet streetlights.",          sketch: (S) => renderPage10Sketch(S) },
+  { id: 11, photo: "photos/p11.jpg", thumb: "thumbs/p11.jpg", title: "Monsoon lookout",        note: "Camo umbrella over the green valley.",                    sketch: (S) => renderPage11Sketch(S) },
+  { id: 12, photo: "photos/p12.jpg", thumb: "thumbs/p12.jpg", title: "The giant haul truck",   note: "Tyres taller than a person, red earth everywhere.",       sketch: (S) => renderPage12Sketch(S) },
+  { id: 13, photo: "photos/p13.jpg", thumb: "thumbs/p13.jpg", title: "Black and red",          note: "Cotton saree, red border, fields beyond.",                sketch: (S) => renderPage13Sketch(S) },
+  { id: 14, photo: "photos/p14.jpg", thumb: "thumbs/p14.jpg", title: "At Chitrakote",          note: "The falls in full monsoon flow.",                         sketch: (S) => renderPage14Sketch(S) },
+];
+
+/* ==========================================================================
+   SKETCH RECORDER — builds a list of drawing ops (lines, washes, text)
+   with a seeded random so every replay draws the same picture.
+   ========================================================================== */
+function mulberry32(a) { return function () { a |= 0; a = a + 0x6D2B79F5 | 0; let t = Math.imul(a ^ a >>> 15, 1 | a); t = t + Math.imul(t ^ t >>> 7, 61 | t) ^ t; return ((t ^ t >>> 14) >>> 0) / 4294967296; }; }
+
+class Sketch {
+  constructor(seed) { this.r = mulberry32(seed); this.ops = []; }
+  rand(a, b) { return a + (b - a) * this.r(); }
+  jit(P, amt) { return P.map(p => [p[0] + this.rand(-amt, amt), p[1] + this.rand(-amt, amt)]); }
+
+  // Catmull-Rom through control points, resampled every ~step px
+  spline(P, step = 3, closed = false) {
+    const n = P.length; if (n < 2) return P.slice();
+    const out = [], segs = closed ? n : n - 1;
+    for (let i = 0; i < segs; i++) {
+      const p0 = P[closed ? (i - 1 + n) % n : Math.max(i - 1, 0)], p1 = P[i], p2 = P[(i + 1) % n], p3 = P[closed ? (i + 2) % n : Math.min(i + 2, n - 1)];
+      const k = Math.max(2, Math.ceil(Math.hypot(p2[0] - p1[0], p2[1] - p1[1]) / step));
+      for (let j = 0; j < k; j++) {
+        const t = j / k, t2 = t * t, t3 = t2 * t;
+        const f = (a, b, c, d) => 0.5 * (2 * b + (-a + c) * t + (2 * a - 5 * b + 4 * c - d) * t2 + (-a + 3 * b - 3 * c + d) * t3);
+        out.push([f(p0[0], p1[0], p2[0], p3[0]), f(p0[1], p1[1], p2[1], p3[1])]);
+      }
+    }
+    out.push(closed ? out[0] : P[n - 1]);
+    return out;
+  }
+  // subdivide straight edges so the spline keeps corners on few-point shapes
+  densify(P, closed, seg = 16) {
+    const out = [], n = P.length, m = closed ? n : n - 1;
+    for (let i = 0; i < m; i++) {
+      const a = P[i], b = P[(i + 1) % n], k = Math.max(1, Math.ceil(Math.hypot(b[0] - a[0], b[1] - a[1]) / seg));
+      for (let j = 0; j < k; j++) out.push([a[0] + (b[0] - a[0]) * j / k, a[1] + (b[1] - a[1]) * j / k]);
+    }
+    if (!closed) out.push(P[n - 1]);
+    return out;
+  }
+  ellipse(cx, cy, rx, ry, rot = 0, n = 24, a0 = 0, a1 = Math.PI * 2) {
+    const pts = [], c = Math.cos(rot), s = Math.sin(rot);
+    for (let i = 0; i < n; i++) { const a = a0 + (a1 - a0) * i / n; const x = Math.cos(a) * rx, y = Math.sin(a) * ry; pts.push([cx + x * c - y * s, cy + x * s + y * c]); }
+    return pts;
+  }
+  // teardrop petal / almond leaf pointing along `ang`
+  petal(cx, cy, ang, len, wid, pointed = false, notch = 0) {
+    const L = [], R = [], ca = Math.cos(ang), sa = Math.sin(ang);
+    const N = 10;
+    for (let i = 0; i <= N; i++) {
+      const s = i / N;
+      let w = pointed ? wid * Math.sin(Math.PI * s) : wid * Math.pow(Math.sin(Math.PI * s), 0.55) * (0.45 + 0.55 * s);
+      if (notch && s > 0.9) w *= 0.8;
+      const ax = len * s, px = -sa, py = ca;
+      L.push([cx + ca * ax + px * w / 2, cy + sa * ax + py * w / 2]);
+      R.push([cx + ca * ax - px * w / 2, cy + sa * ax - py * w / 2]);
+    }
+    return L.concat(R.reverse().slice(1));
+  }
+  tremor(pts, amp) {
+    const ph = this.rand(0, 6.28), ph2 = this.rand(0, 6.28);
+    return pts.map((p, i) => [p[0] + amp * Math.sin(i * 0.23 + ph), p[1] + amp * Math.cos(i * 0.17 + ph2)]);
+  }
+  line(ctrl, o = {}) {
+    const { w = 1.4, c = "#27211d", a = 0.9, passes = 1, jit = 1, step = 3, closed = false, clip = null, tremor = 0.5 } = o;
+    if (closed && ctrl.length <= 6) ctrl = this.densify(ctrl, true);
+    for (let p = 0; p < passes; p++) {
+      const pts = this.tremor(this.spline(this.jit(ctrl, jit * (p ? 1.8 : 1)), step, closed), tremor);
+      this.ops.push({ t: "line", pts, w: w * (p ? 0.65 : 1), c, a: a * (p ? 0.5 : 1), clip });
+    }
+  }
+  wash(poly, o = {}) {
+    const { c = "#6a8fbf", a = 0.3, layers = 3, spread = 3, clip = null, edge = true, mode = null } = o;
+    if (poly.length <= 6) poly = this.densify(poly, true, 22);
+    for (let l = 0; l < layers; l++) {
+      this.ops.push({ t: "wash", pts: this.spline(this.jit(poly, spread), 4, true), c, a, clip, mode, edge: edge && l === 0 });
+    }
+  }
+  hatch(bounds, angle, gap, o = {}) {
+    const [x0, y0, x1, y1] = bounds, cx = (x0 + x1) / 2, cy = (y0 + y1) / 2, R = Math.hypot(x1 - x0, y1 - y0) / 2;
+    const dx = Math.cos(angle), dy = Math.sin(angle), nx = -dy, ny = dx;
+    for (let d = -R; d <= R; d += gap) {
+      const bx = cx + nx * d, by = cy + ny * d;
+      this.line([[bx - dx * R, by - dy * R], [bx + dx * R, by + dy * R]], { step: 6, ...o });
+    }
+  }
+  text(str, x, y, o = {}) { this.ops.push({ t: "text", str, x, y, size: o.size || 20, c: o.c || "#27211d", a: o.a ?? 0.85, rot: o.rot || 0, weight: o.weight || 400 }); }
+}
+
+/* ==========================================================================
+   PAGE 1 — woman in a blue halter maxi dress before a floral mural
+   (loose, impressionistic background; the figure carries the page)
+   ========================================================================== */
+function renderPage1Sketch(S) {
+  const INK = "#27211d", GRAPH = "#6b655e", BLUE = "#5b83b6", DEEP = "#3a5a8c", SKIN = "#e0ab87", HAIR = "#2b211d";
+  const g = { w: 0.7, c: GRAPH, a: 0.3, jit: 0.8, tremor: 0.3 };
+
+  // 1 · pencil construction lines
+  S.line([[300, 198], [301, 782]], g);
+  S.line(S.ellipse(300, 250, 30, 40, 0, 20), { ...g, closed: true });
+  S.line([[248, 324], [352, 326]], g);
+  S.line([[262, 406], [338, 404]], g);
+  S.line([[222, 772], [380, 772]], g);
+  S.line(S.ellipse(170, 560, 150, 150, 0, 36), { ...g, closed: true, a: 0.2 });
+  S.line([[28, 700], [572, 701]], { ...g, a: 0.22 });
+  S.line([[330, 2], [360, 160], [410, 300], [440, 430], [420, 560], [430, 700]], { ...g, a: 0.18 });
+
+  // 2 · big mural blossom
+  const bx = 222, by = 92;
+  const bigAngles = [-2.7, -1.85, -1.05, -0.25, 0.55, 1.35, 2.15];
+  bigAngles.forEach((ang, i) => {
+    const len = S.rand(92, 112), wid = S.rand(64, 78);
+    S.line(S.petal(bx, by, ang, len, wid, false, 1), { w: 1.35, c: INK, closed: true, passes: 2, jit: 1.2 });
+    S.line([[bx + Math.cos(ang) * 22, by + Math.sin(ang) * 22], [bx + Math.cos(ang + 0.08) * len * 0.72, by + Math.sin(ang + 0.08) * len * 0.72]], { w: 0.6, c: GRAPH, a: 0.5 });
+    S.line([[bx + Math.cos(ang) * 22, by + Math.sin(ang) * 22], [bx + Math.cos(ang - 0.12) * len * 0.6, by + Math.sin(ang - 0.12) * len * 0.6]], { w: 0.5, c: GRAPH, a: 0.4 });
+  });
+  for (let i = 0; i < 5; i++) {
+    const ang = -2.4 + i * 1.3;
+    S.line(S.petal(bx, by, ang, 44, 38), { w: 1, c: INK, closed: true, a: 0.75 });
+  }
+  S.line(S.ellipse(bx, by, 17, 16, 0, 14), { w: 1.2, c: INK, closed: true });
+  for (let i = 0; i < 26; i++) {
+    const a = (i / 26) * Math.PI * 2 + S.rand(-0.1, 0.1), r1 = 10, r2 = S.rand(20, 32);
+    const ex = bx + Math.cos(a) * r2, ey = by + Math.sin(a) * r2;
+    S.line([[bx + Math.cos(a) * r1, by + Math.sin(a) * r1], [ex, ey]], { w: 0.7, c: INK, a: 0.7, step: 2, tremor: 0.2 });
+    S.line(S.ellipse(ex, ey, 1.6, 1.6, 0, 6), { w: 1.4, c: "#8a7a2a", closed: true, step: 1, tremor: 0 });
+  }
+
+  // 3 · vines with leaves
+  const leaves = [];
+  const vine = (ctrl, every, lenR, side0 = 1) => {
+    S.line(ctrl, { w: 1.1, c: INK, a: 0.85, jit: 0.6 });
+    const pts = S.spline(ctrl, 3);
+    let side = side0;
+    for (let i = 10; i < pts.length - 4; i += every) {
+      const [x1, y1] = pts[i - 1], [x2, y2] = pts[i + 1];
+      const tan = Math.atan2(y2 - y1, x2 - x1), ang = tan + side * S.rand(0.6, 1.0);
+      const len = S.rand(lenR[0], lenR[1]);
+      const leaf = S.petal(pts[i][0], pts[i][1], ang, len, len * 0.36, true);
+      leaves.push(leaf);
+      S.line(leaf, { w: 1.1, c: INK, closed: true, a: 0.85 });
+      S.line([pts[i], [pts[i][0] + Math.cos(ang) * len * 0.85, pts[i][1] + Math.sin(ang) * len * 0.85]], { w: 0.6, c: INK, a: 0.6 });
+      side *= -1;
+    }
+  };
+  vine([[18, 146], [64, 186], [104, 250], [128, 330], [140, 410], [168, 470]], 15, [30, 46]);
+  vine([[118, 8], [140, 60], [150, 118]], 14, [24, 34], -1);
+  vine([[336, 128], [402, 128], [462, 150], [522, 176], [592, 186]], 16, [30, 44], -1);
+  vine([[598, 548], [556, 582], [508, 604], [456, 640]], 15, [28, 40]);
+
+  // tiny white blossoms
+  const tiny = [[150, 36], [172, 58], [88, 196], [58, 250], [520, 150], [556, 206], [532, 176], [128, 438], [548, 610], [508, 636], [470, 596]];
+  tiny.forEach(([x, y]) => {
+    for (let k = 0; k < 5; k++) { const a = k * 1.2566 + S.rand(-0.2, 0.2); S.line(S.ellipse(x + Math.cos(a) * 6, y + Math.sin(a) * 6, 4.2, 3.4, a, 10), { w: 0.8, c: INK, closed: true, a: 0.75, step: 1.5, tremor: 0.15 }); }
+  });
+
+  // 4 · mural base line and floor tiles
+  S.line([[26, 700], [236, 701]], { w: 1.1, c: INK, a: 0.7 });
+  S.line([[366, 701], [576, 699]], { w: 1.1, c: INK, a: 0.7 });
+  S.line([[20, 726], [228, 727]], { w: 1, c: INK, a: 0.6 });
+  S.line([[372, 727], [580, 725]], { w: 1, c: INK, a: 0.6 });
+  const tileClip = [{ poly: [[18, 728], [582, 728], [582, 798], [18, 798]] }, { poly: [[0, 700], [226, 700], [226, 800], [0, 800]], or: [[374, 700], [600, 700], [600, 800], [374, 800]] }];
+  S.hatch([18, 728, 582, 798], Math.PI / 4, 30, { w: 0.8, c: GRAPH, a: 0.55, clip: tileClip, jit: 0.4 });
+  S.hatch([18, 728, 582, 798], -Math.PI / 4, 30, { w: 0.8, c: GRAPH, a: 0.55, clip: tileClip, jit: 0.4 });
+
+  // 5 · the figure — ink
+  const F = { w: 1.5, c: INK, passes: 2, jit: 0.7 };
+  // head and hair silhouette
+  const hairL = [[300, 212], [284, 216], [271, 232], [265, 268], [260, 318], [255, 378], [258, 438], [266, 456], [276, 442], [276, 392], [274, 334], [278, 290], [282, 262]];
+  const hairR = [[300, 212], [317, 216], [330, 233], [336, 270], [341, 308], [346, 340], [336, 338], [328, 302], [321, 270]];
+  S.line(hairL.slice(0, 9), { ...F, w: 1.3 });
+  S.line(hairR.slice(0, 7), { ...F, w: 1.3 });
+  // face
+  const face = [[280, 244], [281, 262], [286, 276], [294, 285], [301, 288], [310, 284], [317, 274], [321, 260], [322, 244]];
+  S.line(face, { w: 1.2, c: INK, a: 0.85, jit: 0.4 });
+  S.line([[279, 246], [286, 232], [298, 224], [312, 228], [322, 242]], { w: 1, c: INK, a: 0.7, jit: 0.4 });
+  // features: glancing to her left (our right)
+  S.line([[288, 248], [292, 246], [297, 248]], { w: 1.1, c: INK, a: 0.85, jit: 0.2, tremor: 0.1, step: 1.5 });
+  S.line([[306, 248], [310, 246], [315, 248]], { w: 1.1, c: INK, a: 0.85, jit: 0.2, tremor: 0.1, step: 1.5 });
+  S.line(S.ellipse(294.5, 248.6, 1.5, 1.3, 0, 8), { w: 1.8, c: INK, closed: true, step: 1, tremor: 0 });
+  S.line(S.ellipse(312.5, 248.6, 1.5, 1.3, 0, 8), { w: 1.8, c: INK, closed: true, step: 1, tremor: 0 });
+  S.line([[286, 241], [291, 238.5], [298, 240]], { w: 0.9, c: INK, a: 0.7, jit: 0.2, step: 1.5, tremor: 0.1 });
+  S.line([[305, 240], [311, 238.5], [317, 241]], { w: 0.9, c: INK, a: 0.7, jit: 0.2, step: 1.5, tremor: 0.1 });
+  S.line([[303, 252], [305.5, 263], [301, 266]], { w: 0.9, c: INK, a: 0.65, jit: 0.2, step: 1.5, tremor: 0.1 });
+  S.line([[294, 274], [300, 277], [308, 273.5]], { w: 1.1, c: "#7a2f37", a: 0.85, jit: 0.2, step: 1.5, tremor: 0.1 });
+  // neck and shoulders
+  S.line([[291, 284], [290, 300]], F);
+  S.line([[311, 283], [312, 300]], F);
+  S.line([[290, 301], [276, 309], [262, 322]], F);
+  S.line([[312, 301], [326, 309], [338, 322]], F);
+  // halter straps crossing to the collar
+  S.line([[288, 296], [300, 293], [313, 296]], { ...F, w: 1.2 });
+  S.line([[289, 300], [304, 318], [322, 338]], { ...F, w: 1.1 });
+  S.line([[295, 298], [310, 316], [330, 336]], { ...F, w: 1 });
+  S.line([[312, 300], [297, 318], [277, 338]], { ...F, w: 1.1 });
+  S.line([[306, 298], [290, 316], [270, 336]], { ...F, w: 1 });
+  // bodice and pleats
+  S.line([[267, 336], [270, 370], [273, 400]], F);
+  S.line([[333, 336], [330, 370], [327, 400]], F);
+  for (let i = 0; i < 9; i++) { const x = 276 + i * 6; S.line([[x + (300 - x) * 0.18, 342], [x + (300 - x) * 0.05, 398]], { w: 0.65, c: INK, a: 0.55, jit: 0.4 }); }
+  // waistband
+  S.line([[273, 400], [300, 402], [327, 400]], F);
+  S.line([[272, 412], [300, 414], [328, 412]], F);
+  // arms
+  S.line([[262, 322], [252, 346], [247, 376], [248, 400], [256, 412], [278, 415], [293, 411]], F);
+  S.line([[270, 345], [266, 370], [266, 394], [278, 402], [292, 402]], { ...F, w: 1.1 });
+  S.line([[338, 322], [348, 346], [353, 376], [352, 400], [344, 412], [322, 415], [307, 411]], F);
+  S.line([[330, 345], [334, 370], [334, 394], [322, 402], [308, 402]], { ...F, w: 1.1 });
+  // clasped hands, ring, watch
+  S.line(S.ellipse(300, 409, 13, 8, -0.1, 18), { w: 1.2, c: INK, closed: true, a: 0.85 });
+  for (let i = 0; i < 3; i++) S.line([[291 + i * 5, 403], [293 + i * 5, 414]], { w: 0.6, c: INK, a: 0.55, jit: 0.2, step: 1.5 });
+  S.line(S.ellipse(304, 406, 2.4, 2, 0, 8), { w: 1.2, c: "#a07a2a", closed: true, step: 1, tremor: 0 });
+  S.line([[318, 403], [320, 416]], { w: 3.2, c: "#a07a2a", a: 0.85, jit: 0.2, step: 1.5, tremor: 0 });
+  // skirt
+  const skirtL = [[272, 413], [262, 500], [250, 600], [240, 700], [232, 770]];
+  const skirtR = [[328, 413], [340, 500], [352, 620], [362, 700], [368, 770]];
+  S.line(skirtL, F); S.line(skirtR, F);
+  S.line([[232, 770], [262, 774], [300, 771], [336, 775], [368, 770]], { ...F, w: 1.3 });
+  S.line([[286, 418], [278, 560], [270, 770]], { w: 0.8, c: INK, a: 0.55, jit: 0.8 });
+  S.line([[300, 418], [302, 600], [304, 772]], { w: 0.8, c: INK, a: 0.5, jit: 0.8 });
+  S.line([[314, 418], [324, 580], [334, 700]], { w: 0.8, c: INK, a: 0.55, jit: 0.8 });
+  S.line([[262, 470], [254, 640], [250, 770]], { w: 0.7, c: INK, a: 0.45, jit: 0.8 });
+  // slit and a glimpse of leg
+  S.line([[341, 640], [346, 700], [350, 772]], { w: 1.2, c: INK, a: 0.85, jit: 0.4 });
+  S.line([[349, 690], [356, 772]], { w: 0.9, c: INK, a: 0.6, jit: 0.3 });
+  // feet hint
+  S.line([[318, 776], [330, 780], [342, 778]], { w: 0.9, c: INK, a: 0.6, jit: 0.3 });
+
+  // 6 · striped moon behind her
+  const moonClip = [{ circle: [170, 560, 150] }, { poly: [[0, 380], [240, 380], [246, 460], [248, 540], [240, 640], [232, 700], [0, 700]] }];
+  S.line(S.ellipse(170, 560, 150, 150, 0, 36), { w: 1.3, c: INK, closed: true, clip: moonClip, a: 0.8 });
+  S.hatch([20, 410, 320, 710], -0.72, 17, { w: 7, c: "#2c2622", a: 0.72, jit: 0.8, tremor: 0.6, clip: moonClip });
+
+  // 7 · washes (colour goes in after the ink)
+  S.wash([[330, 0], [600, 0], [600, 698], [436, 698], [428, 560], [444, 430], [410, 300], [366, 160]], { c: "#8fb3de", a: 0.1, layers: 3, spread: 5 });
+  S.wash([[40, 698], [560, 698], [560, 440], [300, 440]], { c: "#d9cbb3", a: 0.08, layers: 2, spread: 6 });
+  bigAngles.forEach((ang) => S.wash(S.petal(bx, by, ang, 56, 44), { c: "#e8a3ad", a: 0.18, layers: 2, spread: 2 }));
+  S.wash(S.ellipse(bx, by, 22, 21, 0, 12), { c: "#c9bf4c", a: 0.35, layers: 2, spread: 2 });
+  leaves.forEach(l => S.wash(l, { c: S.r() > 0.5 ? "#8aa566" : "#a7b86f", a: 0.3, layers: 2, spread: 1.5, edge: true }));
+  S.wash([[18, 728], [226, 728], [226, 798], [18, 798]], { c: "#b9a98e", a: 0.12, layers: 2, spread: 2 });
+  S.wash([[374, 728], [582, 728], [582, 798], [374, 798]], { c: "#b9a98e", a: 0.12, layers: 2, spread: 2 });
+  // skin
+  S.wash(face.concat([[300, 222]]), { c: SKIN, a: 0.28, layers: 2, spread: 1.2 });
+  S.wash([[262, 322], [276, 309], [290, 300], [291, 284], [311, 283], [312, 300], [326, 309], [338, 322], [333, 336], [300, 332], [267, 336]], { c: SKIN, a: 0.28, layers: 2, spread: 1.2 });
+  S.wash([[262, 322], [252, 346], [247, 376], [248, 400], [256, 412], [278, 415], [293, 411], [292, 402], [278, 402], [266, 394], [266, 370], [270, 345]], { c: SKIN, a: 0.28, layers: 2, spread: 1 });
+  S.wash([[338, 322], [348, 346], [353, 376], [352, 400], [344, 412], [322, 415], [307, 411], [308, 402], [322, 402], [334, 394], [334, 370], [330, 345]], { c: SKIN, a: 0.28, layers: 2, spread: 1 });
+  S.wash(S.ellipse(300, 409, 13, 8, -0.1, 12), { c: SKIN, a: 0.3, layers: 2, spread: 0.8 });
+  S.wash([[342, 660], [350, 772], [357, 772], [349, 692]], { c: SKIN, a: 0.3, layers: 2, spread: 0.6 });
+  S.wash(S.ellipse(288, 263, 6, 4, 0, 10), { c: "#e58a8a", a: 0.12, layers: 2, spread: 0.6, edge: false });
+  S.wash(S.ellipse(314, 263, 6, 4, 0, 10), { c: "#e58a8a", a: 0.12, layers: 2, spread: 0.6, edge: false });
+  S.wash([[294, 274], [300, 277], [308, 273.5], [301, 279.5]], { c: "#c0616d", a: 0.4, layers: 2, spread: 0.3, edge: false });
+  // dress
+  const skirtPoly = skirtL.concat(skirtR.slice().reverse());
+  S.wash(skirtPoly, { c: BLUE, a: 0.3, layers: 3, spread: 2.5 });
+  S.wash([[272, 413], [286, 418], [276, 600], [268, 772], [232, 770], [240, 700], [250, 600], [262, 500]], { c: DEEP, a: 0.2, layers: 2, spread: 2 });
+  S.wash([[314, 418], [328, 413], [340, 500], [352, 620], [341, 640], [330, 560]], { c: DEEP, a: 0.14, layers: 2, spread: 2 });
+  S.wash([[267, 336], [300, 332], [333, 336], [330, 370], [327, 400], [273, 400], [270, 370]], { c: BLUE, a: 0.32, layers: 3, spread: 1.2 });
+  S.wash([[273, 400], [327, 400], [328, 412], [272, 412]], { c: DEEP, a: 0.3, layers: 2, spread: 0.8 });
+  S.wash([[289, 300], [304, 318], [322, 338], [330, 336], [310, 316], [295, 298]], { c: BLUE, a: 0.35, layers: 2, spread: 0.5 });
+  S.wash([[312, 300], [297, 318], [277, 338], [270, 336], [290, 316], [306, 298]], { c: BLUE, a: 0.35, layers: 2, spread: 0.5 });
+  S.wash([[288, 296], [300, 293], [313, 296], [312, 301], [300, 299], [289, 301]], { c: DEEP, a: 0.35, layers: 2, spread: 0.4 });
+  // hair
+  S.wash(hairL, { c: HAIR, a: 0.34, layers: 3, spread: 1.2 });
+  S.wash(hairR, { c: HAIR, a: 0.34, layers: 3, spread: 1.2 });
+  S.wash([[278, 246], [280, 230], [290, 218], [300, 214], [312, 218], [322, 230], [324, 246], [316, 234], [300, 227], [285, 234]], { c: HAIR, a: 0.38, layers: 3, spread: 0.8 });
+
+  // 8 · dark accents: hair strands, shadows
+  for (let i = 0; i < 22; i++) {
+    const t = i / 21, sx = 298 - t * 24, sy = 214 + t * 20;
+    S.line([[sx, sy], [270 - t * 6 + S.rand(-3, 3), 290], [262 + S.rand(-4, 5), 360], [262 + S.rand(-3, 8), 420 + S.rand(0, 30)]], { w: S.rand(0.5, 1.1), c: HAIR, a: 0.55, jit: 1, step: 4 });
+  }
+  for (let i = 0; i < 12; i++) {
+    const t = i / 11, sx = 302 + t * 24, sy = 214 + t * 20;
+    S.line([[sx, sy], [330 + t * 5, 270], [336 + S.rand(-2, 4), 310], [340 + S.rand(-3, 4), 336]], { w: S.rand(0.5, 1), c: HAIR, a: 0.55, jit: 0.8, step: 4 });
+  }
+  S.hatch([236, 404, 276, 770], 1.2, 5, { w: 0.6, c: DEEP, a: 0.35, jit: 0.4, clip: [{ poly: skirtPoly }, { poly: [[220, 400], [274, 400], [262, 780], [220, 780]] }] });
+  S.hatch([220, 764, 380, 790], -0.25, 5, { w: 0.7, c: INK, a: 0.4, jit: 0.4, clip: [{ ellipse: [300, 778, 82, 9] }] });
+  S.hatch([240, 320, 270, 420], 1.1, 4, { w: 0.5, c: "#8b5a3c", a: 0.35, clip: [{ poly: [[247, 330], [262, 322], [258, 360], [250, 405], [246, 380]] }] });
+
+  // 9 · signature
+  S.text("p.1 · blue hour at the mural", 468, 44, { size: 21, c: "#33407a", rot: -0.05 });
+  S.text("halter blue", 470, 470, { size: 16, c: "#5b534b", rot: 0.06 });
+  S.line([[466, 474], [430, 470], [372, 450]], { w: 0.9, c: "#5b534b", a: 0.6, jit: 0.5 });
+  S.line([[378, 443], [370, 450], [380, 455]], { w: 0.9, c: "#5b534b", a: 0.6, jit: 0.3, step: 1.5 });
+}
+
+/* ==========================================================================
+   PLACEHOLDER — pages 2–14 until their sketch functions are written
+   ========================================================================== */
+function renderPlaceholderSketch(pageId, S) {
+  const GRAPH = "#6b655e";
+  const page = sketchbookData[pageId - 1];
+  S.line([[48, 52], [552, 48], [556, 750], [44, 754]], { w: 0.8, c: GRAPH, a: 0.35, closed: true, jit: 2 });
+  S.line([[48, 52], [556, 750]], { w: 0.6, c: GRAPH, a: 0.15, jit: 1 });
+  S.line([[552, 48], [44, 754]], { w: 0.6, c: GRAPH, a: 0.15, jit: 1 });
+  S.line([[300, 60], [301, 745]], { w: 0.6, c: GRAPH, a: 0.18, jit: 1 });
+  S.line(S.ellipse(300, 330, 110, 160, 0.05, 28), { w: 0.8, c: GRAPH, a: 0.25, closed: true, jit: 2 });
+  S.text(`Page ${pageId}`, 300, 560, { size: 34, c: "#33407a", weight: 700 });
+  S.text(page.title.toLowerCase(), 300, 600, { size: 22, c: "#5b534b" });
+  S.text("sketch not drawn yet · try Doodle to rough it in", 300, 690, { size: 16, c: "#8a8178" });
+}
+
+/* ==========================================================================
+   RENDERER + ANIMATOR
+   ========================================================================== */
+const canvas = document.getElementById("sketch");
+const ctx = canvas.getContext("2d");
+const DPR = Math.min(window.devicePixelRatio || 1, 2);
+canvas.width = 600 * DPR; canvas.height = 800 * DPR;
+const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+function tracePoly(c, pts) { c.moveTo(pts[0][0], pts[0][1]); for (let i = 1; i < pts.length; i++) c.lineTo(pts[i][0], pts[i][1]); c.closePath(); }
+function applyClip(c, clips) {
+  if (!clips) return;
+  for (const cl of clips) {
+    c.beginPath();
+    if (cl.circle) c.arc(cl.circle[0], cl.circle[1], cl.circle[2], 0, Math.PI * 2);
+    else if (cl.ellipse) c.ellipse(cl.ellipse[0], cl.ellipse[1], cl.ellipse[2], cl.ellipse[3], 0, 0, Math.PI * 2);
+    else if (cl.holes) { c.rect(-20, -20, 640, 840); cl.holes.forEach(h => tracePoly(c, h)); c.clip("evenodd"); continue; }
+    else { tracePoly(c, cl.poly); if (cl.or) tracePoly(c, cl.or); }
+    c.clip();
+  }
+}
+function drawOp(op, from = 0, to = null) {
+  ctx.save(); applyClip(ctx, op.clip);
+  if (op.t === "line") {
+    const pts = op.pts, end = to ?? pts.length - 1;
+    ctx.strokeStyle = op.c; ctx.lineWidth = op.w; ctx.globalAlpha = op.a; ctx.lineCap = "round"; ctx.lineJoin = "round";
+    ctx.beginPath(); ctx.moveTo(pts[from][0], pts[from][1]);
+    for (let i = from + 1; i <= end; i++) ctx.lineTo(pts[i][0], pts[i][1]);
+    ctx.stroke();
+  } else if (op.t === "wash") {
+    ctx.globalCompositeOperation = op.mode || "multiply"; ctx.fillStyle = op.c; ctx.globalAlpha = op.a;
+    ctx.beginPath(); tracePoly(ctx, op.pts); ctx.fill();
+    if (op.edge) { ctx.strokeStyle = op.c; ctx.lineWidth = 1.6; ctx.globalAlpha = Math.min(op.a * 1.4, 0.6); ctx.stroke(); }
+  } else if (op.t === "text") {
+    ctx.translate(op.x, op.y); ctx.rotate(op.rot); ctx.globalAlpha = op.a; ctx.fillStyle = op.c;
+    ctx.font = `${op.weight} ${op.size}px Kalam, "Segoe Print", cursive`; ctx.textAlign = "center"; ctx.fillText(op.str, 0, 0);
+  }
+  ctx.restore();
+}
+function clearCanvas() { ctx.setTransform(DPR, 0, 0, DPR, 0, 0); ctx.clearRect(0, 0, 600, 800); }
+
+const opsCache = {};
+function getOps(pageId) {
+  if (opsCache[pageId]) return opsCache[pageId];
+  const page = sketchbookData[pageId - 1];
+  const S = new Sketch(pageId * 7919);
+  if (typeof page.sketch === "function") page.sketch(S); else renderPlaceholderSketch(pageId, S);
+  return (opsCache[pageId] = S.ops);
+}
+
+let animId = null, animState = null;
+const statusEl = document.getElementById("status");
+function drawAll(pageId) { clearCanvas(); getOps(pageId).forEach(op => drawOp(op)); drawDoodles(pageId); }
+function stopAnim() { if (animId) cancelAnimationFrame(animId); animId = null; animState = null; }
+function playSketch(pageId, animate) {
+  stopAnim();
+  const hasSketch = typeof sketchbookData[pageId - 1].sketch === "function";
+  if (!animate || reduceMotion) { drawAll(pageId); setStatus(pageId, true); return; }
+  clearCanvas();
+  const ops = getOps(pageId);
+  animState = { pageId, oi: 0, pi: 0 };
+  const total = ops.reduce((n, op) => n + (op.t === "line" ? op.pts.length : 14), 0);
+  const SPEED = hasSketch ? Math.max(26, Math.ceil(total / 640)) : 40;
+  statusEl.textContent = hasSketch ? "Drawing…" : "";
+  const frame = () => {
+    let budget = SPEED; const s = animState;
+    while (budget > 0 && s.oi < ops.length) {
+      const op = ops[s.oi];
+      if (op.t === "line") {
+        const to = Math.min(op.pts.length - 1, s.pi + budget);
+        drawOp(op, s.pi, to); budget -= (to - s.pi) + 1; s.pi = to;
+        if (s.pi >= op.pts.length - 1) { s.oi++; s.pi = 0; }
+      } else { drawOp(op); budget -= op.t === "wash" ? 14 : 30; s.oi++; }
+    }
+    if (s.oi < ops.length) animId = requestAnimationFrame(frame);
+    else { animId = null; animState = null; drawDoodles(pageId); setStatus(pageId, true); }
+  };
+  frame();
+}
+function finishNow() { if (animState) { const id = animState.pageId; stopAnim(); drawAll(id); setStatus(id, true); } }
+function setStatus(pageId, done) {
+  const has = typeof sketchbookData[pageId - 1].sketch === "function";
+  const n = getOps(pageId).length;
+  statusEl.textContent = has ? `Finished · ${n} strokes and washes` : "Placeholder page · the sketch function is still empty";
+  document.getElementById("sketchState").textContent = has ? "ink & wash" : "pencil guides";
+}
+
+/* Doodles (kept in memory per page) */
+const doodles = {};
+let doodleOn = false, drawing = null;
+function drawDoodles(pageId) {
+  (doodles[pageId] || []).forEach(st => drawOp({ t: "line", pts: st, w: 2, c: "#33407a", a: 0.85 }));
+}
+function toCanvas(e) { const r = canvas.getBoundingClientRect(); return [(e.clientX - r.left) / r.width * 600, (e.clientY - r.top) / r.height * 800]; }
+canvas.addEventListener("pointerdown", e => {
+  if (!doodleOn) return; finishNow();
+  canvas.setPointerCapture(e.pointerId);
+  drawing = [toCanvas(e)]; (doodles[current] ||= []).push(drawing);
+});
+canvas.addEventListener("pointermove", e => {
+  if (!drawing) return; const p = toCanvas(e); drawing.push(p);
+  const n = drawing.length; if (n > 1) drawOp({ t: "line", pts: drawing, w: 2, c: "#33407a", a: 0.85 }, n - 2, n - 1);
+});
+const endStroke = () => { drawing = null; };
+canvas.addEventListener("pointerup", endStroke); canvas.addEventListener("pointercancel", endStroke);
+
+/* ==========================================================================
+   NAVIGATION
+   ========================================================================== */
+let current = 1;
+const visited = new Set();
+const photo = document.getElementById("photo");
+const strip = document.getElementById("filmstrip");
+const spread = document.getElementById("spread");
+
+sketchbookData.forEach(p => {
+  const b = document.createElement("button");
+  b.className = "frame"; b.type = "button"; b.dataset.id = p.id;
+  b.setAttribute("aria-label", `Page ${p.id}: ${p.title}`);
+  b.innerHTML = `<img src="${p.thumb}" alt="" loading="lazy"><span>${String(p.id).padStart(2, "0")}</span>${typeof p.sketch === "function" ? '<i class="dot"></i>' : ""}`;
+  b.addEventListener("click", () => goTo(p.id));
+  strip.appendChild(b);
+});
+
+function goTo(id, opts = {}) {
+  id = Math.max(1, Math.min(sketchbookData.length, id));
+  const dir = id > current ? "next" : id < current ? "prev" : null;
+  current = id;
+  const p = sketchbookData[id - 1];
+  photo.classList.add("loading");
+  photo.onload = () => photo.classList.remove("loading");
+  photo.src = p.photo;
+  photo.alt = `Photo ${id}: ${p.title}`;
+  document.getElementById("pageNo").textContent = String(id).padStart(2, "0");
+  document.getElementById("pageTitle").textContent = p.title;
+  document.getElementById("pageNote").textContent = p.note;
+  document.getElementById("prevBtn").disabled = id === 1;
+  document.getElementById("nextBtn").disabled = id === sketchbookData.length;
+  strip.querySelectorAll(".frame").forEach(f => {
+    const on = +f.dataset.id === id; f.setAttribute("aria-current", on ? "true" : "false");
+    if (on && !opts.initial) f.scrollIntoView({ behavior: reduceMotion ? "auto" : "smooth", inline: "center", block: "nearest" });
+  });
+  if (dir && !reduceMotion) { spread.classList.remove("flip-next", "flip-prev"); void spread.offsetWidth; spread.classList.add("flip-" + dir); }
+  const first = !visited.has(id); visited.add(id);
+  playSketch(id, first);
+  try { history.replaceState(null, "", "#p" + id); } catch (e) {}
+}
+
+document.getElementById("prevBtn").addEventListener("click", () => goTo(current - 1));
+document.getElementById("nextBtn").addEventListener("click", () => goTo(current + 1));
+document.getElementById("replayBtn").addEventListener("click", () => playSketch(current, true));
+document.getElementById("finishBtn").addEventListener("click", finishNow);
+const doodleBtn = document.getElementById("doodleBtn");
+function toggleDoodle() {
+  doodleOn = !doodleOn; doodleBtn.setAttribute("aria-pressed", doodleOn); canvas.classList.toggle("doodling", doodleOn);
+  statusEl.textContent = doodleOn ? "Doodle mode · draw straight onto the page" : statusEl.textContent;
+}
+doodleBtn.addEventListener("click", toggleDoodle);
+document.getElementById("clearBtn").addEventListener("click", () => { doodles[current] = []; stopAnim(); drawAll(current); });
+document.addEventListener("keydown", e => {
+  if (e.target.closest("input, textarea")) return;
+  if (e.key === "ArrowRight") goTo(current + 1);
+  else if (e.key === "ArrowLeft") goTo(current - 1);
+  else if (e.key.toLowerCase() === "r") playSketch(current, true);
+  else if (e.key.toLowerCase() === "d") toggleDoodle();
+});
+
+/* ==========================================================================
+   AMBIENT LOFI PIANO — Web Audio, generated live (no files)
+   Fmaj7 → Em7 → Dm7 → Cmaj7 at 70 bpm, soft felt-piano voice,
+   tape-warm lowpass, generated room reverb and faint vinyl crackle.
+   ========================================================================== */
+const Lofi = (() => {
+  let ac, master, bus, verb, timer, nextT, step = 0, noiseSrc;
+  const BPM = 70, EIGHTH = 60 / BPM / 2;
+  const chords = [[53, 57, 60, 64], [52, 55, 59, 62], [50, 53, 57, 60], [48, 52, 55, 59]];
+  const arp = [0, 2, 3, 1, 2, 3, 1, 2];
+  const hz = m => 440 * Math.pow(2, (m - 69) / 12);
+
+  function impulse(sec) {
+    const len = ac.sampleRate * sec, b = ac.createBuffer(2, len, ac.sampleRate);
+    for (let c = 0; c < 2; c++) { const d = b.getChannelData(c); for (let i = 0; i < len; i++) d[i] = (Math.random() * 2 - 1) * Math.pow(1 - i / len, 2.6); }
+    return b;
+  }
+  function crackle() {
+    const len = ac.sampleRate * 4, b = ac.createBuffer(1, len, ac.sampleRate), d = b.getChannelData(0);
+    for (let i = 0; i < len; i++) { d[i] = (Math.random() * 2 - 1) * 0.012; if (Math.random() < 0.00035) d[i] += (Math.random() * 2 - 1) * 0.6; }
+    const src = ac.createBufferSource(); src.buffer = b; src.loop = true;
+    const hp = ac.createBiquadFilter(); hp.type = "highpass"; hp.frequency.value = 900;
+    const g = ac.createGain(); g.gain.value = 0.22;
+    src.connect(hp).connect(g).connect(master); src.start();
+    return src;
+  }
+  function note(m, t, dur, vel) {
+    const f = hz(m), g = ac.createGain(), lp = ac.createBiquadFilter();
+    lp.type = "lowpass"; lp.frequency.setValueAtTime(Math.min(f * 6, 2600), t); lp.frequency.exponentialRampToValueAtTime(Math.max(f * 1.5, 300), t + dur);
+    g.gain.setValueAtTime(0.0001, t); g.gain.exponentialRampToValueAtTime(vel, t + 0.012); g.gain.exponentialRampToValueAtTime(0.0001, t + dur);
+    [[1, "triangle", 1], [2, "sine", 0.35], [3, "sine", 0.08]].forEach(([mult, type, amp]) => {
+      const o = ac.createOscillator(), og = ac.createGain();
+      o.type = type; o.frequency.value = f * mult; o.detune.value = (Math.random() - 0.5) * 8; og.gain.value = amp;
+      o.connect(og).connect(lp); o.start(t); o.stop(t + dur + 0.05);
+    });
+    lp.connect(g); g.connect(bus);
+  }
+  function schedule() {
+    while (nextT < ac.currentTime + 0.25) {
+      const bar = Math.floor(step / 8) % chords.length, s = step % 8, ch = chords[bar];
+      const swing = s % 2 ? EIGHTH * 0.14 : 0, hum = (Math.random() - 0.5) * 0.012, t = nextT + swing + hum;
+      if (s === 0) { note(ch[0] - 12, t, 3.2, 0.16); ch.forEach((m, i) => note(m, t + i * 0.018, 2.6, 0.05)); }
+      if (Math.random() > 0.18 || s === 0) note(ch[arp[s]] + 12, t, 1.4, 0.05 + Math.random() * 0.025);
+      if (s === 6 && Math.random() > 0.55) note(ch[3] + 24, t, 1.8, 0.022);
+      nextT += EIGHTH; step++;
+    }
+  }
+  return {
+    on: false,
+    async start() {
+      if (!ac) {
+        ac = new (window.AudioContext || window.webkitAudioContext)();
+        master = ac.createGain(); master.gain.value = 0.0001; master.connect(ac.destination);
+        const warm = ac.createBiquadFilter(); warm.type = "lowpass"; warm.frequency.value = 3200; warm.connect(master);
+        bus = ac.createGain(); bus.gain.value = 0.9; bus.connect(warm);
+        verb = ac.createConvolver(); verb.buffer = impulse(2.8);
+        const wet = ac.createGain(); wet.gain.value = 0.35; bus.connect(verb).connect(wet).connect(warm);
+      }
+      await ac.resume();
+      if (!noiseSrc) noiseSrc = crackle();
+      master.gain.cancelScheduledValues(ac.currentTime);
+      master.gain.setTargetAtTime(0.8, ac.currentTime, 0.6);
+      nextT = ac.currentTime + 0.1; step = 0;
+      clearInterval(timer); timer = setInterval(schedule, 60); schedule();
+      this.on = true;
+    },
+    stop() {
+      if (!ac) return;
+      clearInterval(timer);
+      master.gain.cancelScheduledValues(ac.currentTime);
+      master.gain.setTargetAtTime(0.0001, ac.currentTime, 0.35);
+      setTimeout(() => { if (!this.on) ac.suspend(); }, 1600);
+      this.on = false;
+    }
+  };
+})();
+const soundBtn = document.getElementById("soundBtn");
+soundBtn.addEventListener("click", async () => {
+  if (Lofi.on) Lofi.stop(); else { try { await Lofi.start(); } catch (e) { document.getElementById("soundLabel").textContent = "Audio unavailable"; return; } }
+  soundBtn.setAttribute("aria-pressed", Lofi.on);
+  document.getElementById("soundLabel").textContent = Lofi.on ? "Lofi piano · on" : "Lofi piano · off";
+});
+
+/* boot */
+const startId = (() => { const m = /^#p(\d{1,2})$/.exec(location.hash); return m ? +m[1] : 1; })();
+const boot = () => goTo(startId, { initial: true });
+(document.fonts && document.fonts.ready ? document.fonts.ready : Promise.resolve()).then(boot, boot);
+</script>
+
+</body>
+</html>
